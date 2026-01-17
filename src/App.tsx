@@ -21,6 +21,13 @@ interface DayStat {
   total: number;
 }
 
+type ChunkStatus = 'unreviewed' | 'correct' | 'wrong' | 'skipped';
+
+interface ChunkProgress {
+  chunkId: number;
+  status: ChunkStatus;
+}
+
 const speak = (text: string) => {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
@@ -82,7 +89,6 @@ function StatisticsDashboard({ onClose }: { onClose: () => void }) {
           <div className="stats-container">
             <div className="chart-wrapper">
               <svg viewBox={`0 0 ${chartData?.width} ${chartData?.height}`} className="stats-svg">
-                {/* Grid Lines */}
                 {[0, 0.5, 1].map(v => (
                   <line
                     key={v}
@@ -94,7 +100,6 @@ function StatisticsDashboard({ onClose }: { onClose: () => void }) {
                   />
                 ))}
 
-                {/* Total Path */}
                 <path
                   d={`M ${chartData?.points.map(p => `${p.x},${p.yTotal}`).join(' L ')}`}
                   fill="none"
@@ -102,7 +107,6 @@ function StatisticsDashboard({ onClose }: { onClose: () => void }) {
                   strokeWidth="2"
                 />
 
-                {/* Correct Path */}
                 <path
                   d={`M ${chartData?.points.map(p => `${p.x},${p.yCorrect}`).join(' L ')}`}
                   fill="none"
@@ -112,7 +116,6 @@ function StatisticsDashboard({ onClose }: { onClose: () => void }) {
                   strokeLinejoin="round"
                 />
 
-                {/* Data Points */}
                 {chartData?.points.map((p, i) => (
                   <g key={i} className="chart-point">
                     <circle cx={p.x} cy={p.yCorrect} r="4" fill="var(--accent-primary)" />
@@ -407,15 +410,47 @@ function AddChunkModal({ groupId, onClose, onSuccess }: { groupId: string; onClo
   );
 }
 
-function FlashCard({ chunk, isFlipped, onFlip, onEdit }: { chunk: Chunk; isFlipped: boolean; onFlip: () => void; onEdit: () => void }) {
+function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit }: {
+  chunk: Chunk;
+  isFlipped: boolean;
+  onSingleClick: () => void;
+  onDoubleClick: () => void;
+  onEdit: () => void
+}) {
+  const [lastClickTime, setLastClickTime] = useState(0);
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Don't trigger if clicking edit or speaker buttons
+    if ((e.target as HTMLElement).closest('.edit-chunk-btn, .tts-btn-small')) {
+      return;
+    }
+
+    const now = Date.now();
+    const timeSinceLastClick = now - lastClickTime;
+
+    if (timeSinceLastClick < 300) {
+      // Double click
+      onDoubleClick();
+      setLastClickTime(0); // Reset to avoid triple-click
+    } else {
+      // Single click - wait a bit to distinguish from double click
+      setTimeout(() => {
+        if (Date.now() - now > 250) {
+          onSingleClick();
+        }
+      }, 250);
+      setLastClickTime(now);
+    }
+  };
+
   return (
-    <div className={`flash-card-container ${isFlipped ? 'flipped' : ''}`} onClick={onFlip}>
+    <div className={`flash-card-container ${isFlipped ? 'flipped' : ''}`} onClick={handleClick}>
       <div className="flash-card">
         <div className="card-face card-front">
           <button className="edit-chunk-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎</button>
           <div className="chunk-info">
             <h2 className="chunk-english">{chunk.english}</h2>
-            <p className="tap-hint">Cevabı görmek için tıkla</p>
+            <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
           </div>
           <button className="tts-btn-small" onClick={(e) => { e.stopPropagation(); speak(chunk.english); }}>🔊</button>
         </div>
@@ -442,10 +477,8 @@ function App() {
   const [sessionChunks, setSessionChunks] = useState<Chunk[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [wrongChunks, setWrongChunks] = useState<Chunk[]>([]);
-  const [score, setScore] = useState({ correct: 0, total: 0 });
+  const [progress, setProgress] = useState<ChunkProgress[]>([]);
   const [isFinished, setIsFinished] = useState(false);
-  const [reviewMode, setReviewMode] = useState(false);
 
   // Modals
   const [showGroupModal, setShowGroupModal] = useState(false);
@@ -459,16 +492,13 @@ function App() {
       const res = await fetch('/api/groups');
       const data = await res.json();
       setGroups(data);
-      // Logic to handle group selection after fetch
       if (data.length > 0) {
         const currentStillExists = data.find((g: Group) => g.id === selectedGroupId);
         if (!currentStillExists) {
-          // Check if default exists, else first
           const defaultGroup = data.find((g: Group) => g.id === 'default');
           setSelectedGroupId(defaultGroup ? defaultGroup.id : data[0].id);
         }
       } else {
-        // No groups (rare if default guaranteed by backend)
         setSelectedGroupId('');
       }
     } catch (err) {
@@ -476,30 +506,25 @@ function App() {
     }
   };
 
-  const fetchChunks = useCallback(async (groupId: string, isReview = false, specificChunks?: Chunk[]) => {
-    let chunksToUse: Chunk[] = [];
-    if (isReview && specificChunks) {
-      chunksToUse = [...specificChunks];
-    } else if (groupId) {
-      try {
-        const res = await fetch(`/api/chunks/${groupId}`);
-        if (res.ok) {
-          const data = await res.json();
-          chunksToUse = Array.isArray(data) ? data : [];
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
+  const fetchChunks = useCallback(async (groupId: string) => {
+    if (!groupId) return;
 
-    const shuffled = [...chunksToUse].sort(() => Math.random() - 0.5);
-    setSessionChunks(shuffled);
-    setCurrentIndex(0);
-    setIsFlipped(false);
-    setIsFinished(false);
-    setScore({ correct: 0, total: shuffled.length });
-    setReviewMode(isReview);
-    if (!isReview) setWrongChunks([]);
+    try {
+      const res = await fetch(`/api/chunks/${groupId}`);
+      if (res.ok) {
+        const data = await res.json();
+        const chunksToUse = Array.isArray(data) ? data : [];
+
+        const shuffled = [...chunksToUse].sort(() => Math.random() - 0.5);
+        setSessionChunks(shuffled);
+        setCurrentIndex(0);
+        setIsFlipped(false);
+        setIsFinished(false);
+        setProgress(shuffled.map(c => ({ chunkId: c.id, status: 'unreviewed' as ChunkStatus })));
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }, []);
 
   const saveStats = async (correct: number, wrong: number) => {
@@ -525,15 +550,16 @@ function App() {
     }
   }, [selectedGroupId, fetchChunks, groups]);
 
-  const handleNext = (correct: boolean) => {
-    const current = sessionChunks[currentIndex];
-    let newCorrect = score.correct;
-    if (!correct) {
-      setWrongChunks(prev => [...prev.filter(c => c.id !== current.id), current]);
-    }
-    if (correct) {
-      newCorrect = score.correct + 1;
-      setScore(prev => ({ ...prev, correct: newCorrect }));
+  const handleAnswer = (status: ChunkStatus) => {
+    const newProgress = [...progress];
+    newProgress[currentIndex].status = status;
+    setProgress(newProgress);
+
+    // Record stats
+    if (status === 'correct') {
+      saveStats(1, 0);
+    } else if (status === 'wrong') {
+      saveStats(0, 1);
     }
 
     if (currentIndex + 1 < sessionChunks.length) {
@@ -541,52 +567,78 @@ function App() {
       setIsFlipped(false);
     } else {
       setIsFinished(true);
-      // Track actual answers:
-      saveStats(correct ? 1 : 0, correct ? 0 : 1);
     }
+  };
 
-    // For stats during the session:
-    if (currentIndex + 1 < sessionChunks.length) {
-      saveStats(correct ? 1 : 0, correct ? 0 : 1);
+  const jumpToCard = (index: number) => {
+    setCurrentIndex(index);
+    setIsFlipped(false);
+  };
+
+  const getStatusClass = (status: ChunkStatus) => {
+    switch (status) {
+      case 'correct': return 'status-correct';
+      case 'wrong': return 'status-wrong';
+      case 'skipped': return 'status-skipped';
+      default: return 'status-unreviewed';
     }
   };
 
   const currentChunk = sessionChunks[currentIndex];
   const selectedGroup = groups.find(g => g.id === selectedGroupId);
 
+  // Calculate stats for finish screen
+  const correctCount = progress.filter(p => p.status === 'correct').length;
+  const wrongCount = progress.filter(p => p.status === 'wrong').length;
+  const skippedCount = progress.filter(p => p.status === 'skipped').length;
+
   return (
     <div className="container">
-      <nav className="top-nav">
+      <nav className="top-nav-modern">
         <div className="nav-left">
-          <div className="group-selector-wrapper">
-            <select
-              value={selectedGroupId}
-              onChange={(e) => setSelectedGroupId(e.target.value)}
-            >
-              {groups.length === 0 && <option value="">Grup Yok</option>}
-              {groups.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
-            </select>
-            <button className="nav-icon-btn" onClick={() => setShowEditGroupModal(true)} title="Grubu Düzenle">⚙</button>
-            <button className="nav-icon-btn plus" onClick={() => setShowGroupModal(true)} title="Grup Oluştur">+</button>
-          </div>
+          <h1 className="logo-text-nav" onClick={() => window.location.reload()}>Chunk <span className="accent">Radar</span></h1>
         </div>
-
-        <h1 className="logo-text-nav" onClick={() => window.location.reload()}>Chunk <span className="accent">Radar</span></h1>
 
         <div className="nav-right">
           <button className="nav-btn stats" onClick={() => setShowStatsModal(true)}>📈 İst.</button>
-          <button className="nav-btn primary" onClick={() => setShowChunkModal(true)}>Yeni Ekle</button>
+          <button className="nav-btn secondary" onClick={() => setShowChunkModal(true)}>+ Chunk</button>
+          <button className="nav-btn secondary" onClick={() => setShowGroupModal(true)}>+ Grup</button>
+          {selectedGroup && (
+            <button className="nav-btn secondary" onClick={() => setShowEditGroupModal(true)}>⚙ Düzenle</button>
+          )}
         </div>
       </nav>
 
-      <header className="progress-header">
-        <div className="progress-bar-container">
-          <div className="progress-bar" style={{ width: `${(sessionChunks.length > 0 ? (currentIndex + (isFinished ? 1 : 0)) / sessionChunks.length : 0) * 100}%` }}></div>
+      {/* Modern Group Tabs */}
+      <div className="group-tabs-container">
+        <div className="group-tabs">
+          {groups.map(g => (
+            <button
+              key={g.id}
+              className={`group-tab ${selectedGroupId === g.id ? 'active' : ''}`}
+              onClick={() => setSelectedGroupId(g.id)}
+            >
+              {g.name}
+            </button>
+          ))}
         </div>
-        <div className="score-info">
-          {sessionChunks.length > 0 ? `${currentIndex + 1} / ${sessionChunks.length}` : 'Grup Boş'} {reviewMode && <span className="review-tag">Tekrar Modu</span>}
+      </div>
+
+      {/* Mini Cards Navigation */}
+      {sessionChunks.length > 0 && !isFinished && (
+        <div className="mini-cards-nav">
+          {sessionChunks.map((chunk, idx) => (
+            <div
+              key={chunk.id}
+              className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
+              onClick={() => jumpToCard(idx)}
+              title={`Chunk ${idx + 1}: ${chunk.english}`}
+            >
+              {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
+            </div>
+          ))}
         </div>
-      </header>
+      )}
 
       <main className="game-area">
         {selectedGroupId && sessionChunks.length > 0 ? (
@@ -595,20 +647,15 @@ function App() {
               <FlashCard
                 chunk={currentChunk}
                 isFlipped={isFlipped}
-                onFlip={() => {
-                  if (!isFlipped) {
-                    setIsFlipped(true);
-                    speak(currentChunk.english);
-                  } else {
-                    setIsFlipped(false);
-                  }
-                }}
+                onSingleClick={() => speak(currentChunk.english)}
+                onDoubleClick={() => setIsFlipped(!isFlipped)}
                 onEdit={() => setShowEditChunkModal(currentChunk)}
               />
               {isFlipped && (
                 <div className="controls">
-                  <button className="btn btn-wrong" onClick={() => handleNext(false)}>Yanlış</button>
-                  <button className="btn btn-correct" onClick={() => handleNext(true)}>Doğru</button>
+                  <button className="btn btn-wrong" onClick={() => handleAnswer('wrong')}>Yanlış</button>
+                  <button className="btn btn-skipped" onClick={() => handleAnswer('skipped')}>Bilmiyorum</button>
+                  <button className="btn btn-correct" onClick={() => handleAnswer('correct')}>Doğru</button>
                 </div>
               )}
             </>
@@ -618,18 +665,19 @@ function App() {
               <div className="stats-grid">
                 <div className="stat-item">
                   <span className="stat-label">Doğru</span>
-                  <span className="stat-value text-correct">{score.correct}</span>
+                  <span className="stat-value text-correct">{correctCount}</span>
                 </div>
                 <div className="stat-item">
                   <span className="stat-label">Yanlış</span>
-                  <span className="stat-value text-wrong">{wrongChunks.length}</span>
+                  <span className="stat-value text-wrong">{wrongCount}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">Bilmiyorum</span>
+                  <span className="stat-value text-skipped">{skippedCount}</span>
                 </div>
               </div>
               <div className="finish-actions">
                 <button className="btn btn-primary" onClick={() => fetchChunks(selectedGroupId)}>Yeniden Başlat</button>
-                {wrongChunks.length > 0 && (
-                  <button className="btn btn-secondary" onClick={() => fetchChunks(selectedGroupId, true, wrongChunks)}>Yanlışları Tekrar Et ({wrongChunks.length})</button>
-                )}
               </div>
             </div>
           )
@@ -657,65 +705,155 @@ function App() {
       {showStatsModal && <StatisticsDashboard onClose={() => setShowStatsModal(false)} />}
 
       <style>{`
-        .top-nav {
+        /* Modern Navigation */
+        .top-nav-modern {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 2rem;
+          margin-bottom: 1.5rem;
           padding: 1rem 0;
-          border-bottom: 1px solid var(--glass-border);
-          gap: 1rem;
         }
 
         .nav-left, .nav-right { display: flex; align-items: center; gap: 0.8rem; }
-        
-        .group-selector-wrapper {
-          display: flex;
-          background: var(--bg-card);
-          border: 1px solid var(--glass-border);
-          border-radius: 12px;
-          padding: 2px;
-          align-items: center;
-        }
-
-        .group-selector-wrapper select {
-          background: transparent;
-          color: white;
-          border: none;
-          padding: 0.5rem 0.8rem;
-          outline: none;
-          max-width: 150px;
-        }
-
-        .nav-icon-btn {
-          background: transparent;
-          border: none;
-          color: var(--text-muted);
-          cursor: pointer;
-          font-size: 1.1rem;
-          padding: 0.4rem 0.6rem;
-          transition: 0.2s;
-        }
-        .nav-icon-btn:hover { color: white; }
-        .nav-icon-btn.plus { color: var(--accent-primary); border-left: 1px solid var(--glass-border); }
-
-        .logo-text-nav { font-size: 1.4rem; font-weight: 800; cursor: pointer; flex-shrink: 0; }
+        .logo-text-nav { font-size: 1.8rem; font-weight: 800; cursor: pointer; }
 
         .nav-btn {
-          padding: 0.5rem 1rem;
-          border-radius: 10px;
+          padding: 0.6rem 1.2rem;
+          border-radius: 12px;
           cursor: pointer;
           font-weight: 600;
           border: 1px solid var(--glass-border);
-          transition: 0.2s;
+          transition: all 0.2s;
           font-family: 'Outfit', sans-serif;
+          font-size: 0.9rem;
         }
         .nav-btn.primary { background: var(--accent-primary); color: white; border: none; }
-        .nav-btn.stats { background: var(--glass); color: white; }
-        .nav-btn:hover { opacity: 0.8; }
+        .nav-btn.secondary { background: var(--glass); color: white; }
+        .nav-btn.stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; }
+        .nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
 
-        .progress-header { margin-bottom: 2rem; text-align: center; }
+        /* Group Tabs */
+        .group-tabs-container {
+          margin-bottom: 2rem;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
 
+        .group-tabs {
+          display: flex;
+          gap: 0.8rem;
+          padding: 0.5rem 0;
+          min-width: min-content;
+        }
+
+        .group-tab {
+          padding: 0.8rem 1.8rem;
+          border-radius: 50px;
+          background: var(--glass);
+          color: var(--text-muted);
+          border: 1px solid var(--glass-border);
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          white-space: nowrap;
+          font-family: 'Outfit', sans-serif;
+        }
+
+        .group-tab:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+        }
+
+        .group-tab.active {
+          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+          color: white;
+          border-color: transparent;
+          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Mini Cards Navigation */
+        .mini-cards-nav {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 2rem;
+          padding: 1rem;
+          background: var(--bg-card);
+          border-radius: 16px;
+          border: 1px solid var(--glass-border);
+          flex-wrap: wrap;
+          justify-content: center;
+          max-width: 800px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .mini-card {
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.75rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.2s;
+          border: 2px solid transparent;
+        }
+
+        .mini-card:hover {
+          transform: scale(1.1);
+        }
+
+        .mini-card.active {
+          border-color: white;
+          box-shadow: 0 0 0 2px var(--bg-deep);
+        }
+
+        .mini-card.status-unreviewed {
+          background: rgba(255, 255, 255, 0.15);
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        .mini-card.status-correct {
+          background: #22c55e;
+          color: white;
+        }
+
+        .mini-card.status-wrong {
+          background: #ef4444;
+          color: white;
+        }
+
+        .mini-card.status-skipped {
+          background: #3b82f6;
+          color: white;
+        }
+
+        /* Updated Controls */
+        .controls {
+          display: flex;
+          gap: 1rem;
+          width: 100%;
+          max-width: 600px;
+        }
+
+        .btn-skipped {
+          background: rgba(59, 130, 246, 0.15);
+          color: #3b82f6;
+          border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-skipped:hover {
+          background: #3b82f6;
+          color: white;
+        }
+
+        /* Stats */
+        .text-skipped { color: #3b82f6; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+
+        /* Modal Styles */
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
@@ -755,42 +893,44 @@ function App() {
         .summary-value { font-size: 2rem; font-weight: 800; }
 
         /* Edit Styles */
-        .edit-chunk-btn { position: absolute; top: 1rem; left: 1rem; background: var(--glass); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .edit-chunk-btn { position: absolute; top: 1rem; left: 1rem; background: var(--glass); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; z-index: 10; }
         .card-front:hover .edit-chunk-btn { opacity: 1; }
         .edit-chunk-btn:hover { background: var(--accent-primary); color: white; }
 
-        /* Existing Game Styles */
+        /* Game Styles */
         .accent { background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .progress-bar-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 10px; overflow: hidden; margin-bottom: 0.5rem; }
-        .progress-bar { height: 100%; background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary)); transition: width 0.4s ease; }
-        .score-info { font-size: 0.9rem; color: var(--text-muted); }
         .game-area { display: flex; flex-direction: column; align-items: center; gap: 2rem; perspective: 1000px; padding-bottom: 4rem;}
-        .flash-card-container { width: 100%; max-width: 450px; height: 340px; cursor: pointer; }
+        .flash-card-container { width: 100%; max-width: 500px; height: 380px; cursor: pointer; }
         .flash-card { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
         .flash-card-container.flipped .flash-card { transform: rotateY(180deg); }
         .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2.5rem; background: var(--bg-card); border: 1px solid var(--glass-border); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); }
         .card-front { background: linear-gradient(135deg, #1c1c24 0%, #121216 100%); }
         .card-back { background: linear-gradient(135deg, #1e1b4b 0%, #121216 100%); transform: rotateY(180deg); }
-        .chunk-english { font-size: 2.3rem; text-align: center; margin-bottom: 1rem; font-family: 'Outfit', sans-serif; font-weight: 700; }
+        .chunk-english { font-size: 2.5rem; text-align: center; margin-bottom: 1rem; font-family: 'Outfit', sans-serif; font-weight: 700; }
         .tap-hint { color: var(--text-muted); font-size: 0.9rem; opacity: 0.6; }
+        .chunk-info { text-align: center; }
         .back-content { width: 100%; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
-        .chunk-turkish-back { color: var(--accent-secondary); font-size: 1.6rem; font-weight: 700; text-align: center; }
+        .chunk-turkish-back { color: var(--accent-secondary); font-size: 1.8rem; font-weight: 700; text-align: center; }
         .examples-list-back { width: 100%; display: flex; flex-direction: column; gap: 0.8rem; }
-        .example-item-back { background: var(--glass); padding: 12px 16px; border-radius: 14px; font-size: 0.95rem; color: var(--text-muted); transition: all 0.2s; border: 1px solid var(--glass-border); }
+        .example-item-back { background: var(--glass); padding: 14px 18px; border-radius: 16px; font-size: 1rem; color: var(--text-muted); transition: all 0.2s; border: 1px solid var(--glass-border); cursor: pointer; }
         .example-item-back:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.08); transform: translateX(5px); }
-        .tts-btn-small { position: absolute; bottom: 1.5rem; right: 1.5rem; background: var(--glass); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; }
-        .controls { display: flex; gap: 1.5rem; width: 100%; max-width: 450px; }
+        .tts-btn-small { position: absolute; bottom: 1.5rem; right: 1.5rem; background: var(--glass); border: none; color: white; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
+        .tts-btn-small:hover { background: var(--accent-primary); transform: scale(1.1); }
         .btn { flex: 1; padding: 1.2rem; border-radius: 20px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; border: none; font-family: 'Outfit', sans-serif; }
         .btn-wrong { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-wrong:hover { background: #ef4444; color: white; }
         .btn-correct { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
         .btn-correct:hover { background: #22c55e; color: white; }
-        .finish-card { background: var(--bg-card); padding: 3.5rem; border-radius: 36px; text-align: center; width: 100%; max-width: 480px; border: 1px solid var(--glass-border); }
+        .finish-card { background: var(--bg-card); padding: 3.5rem; border-radius: 36px; text-align: center; width: 100%; max-width: 560px; border: 1px solid var(--glass-border); }
         .finish-title { font-size: 2.2rem; margin-bottom: 2rem; }
+        .stat-item { display: flex; flex-direction: column; gap: 0.5rem; }
+        .stat-label { color: var(--text-muted); font-size: 0.9rem; }
+        .stat-value { font-size: 2.5rem; font-weight: 800; }
         .text-correct { color: #22c55e; }
         .text-wrong { color: #ef4444; }
         .btn-primary { background: var(--accent-primary); color: white; }
         .btn-secondary { background: var(--glass); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .finish-actions { margin-top: 2rem; display: flex; justify-content: center; }
         .empty-state { text-align: center; margin-top: 4rem; color: var(--text-muted); }
       `}</style>
     </div>
