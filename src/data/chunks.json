@@ -1,0 +1,102 @@
+[
+    {
+        "id": 1,
+        "english": "How's it going?",
+        "turkish": "Nasıl gidiyor?",
+        "examples": [
+            "Hey! How's it going today?",
+            "How's it going with your new job?",
+            "Long time no see! How's it going?"
+        ]
+    },
+    {
+        "id": 2,
+        "english": "Take care",
+        "turkish": "Kendine iyi bak",
+        "examples": [
+            "See you later, take care!",
+            "Take care of yourself while you're away.",
+            "It was nice meeting you. Take care!"
+        ]
+    },
+    {
+        "id": 3,
+        "english": "I'm on my way",
+        "turkish": "Yoldayım / Geliyorum",
+        "examples": [
+            "Don't worry, I'm on my way now.",
+            "I'm on my way to the office.",
+            "Are you coming? Yes, I'm on my way."
+        ]
+    },
+    {
+        "id": 4,
+        "english": "Never mind",
+        "turkish": "Boşver / Önemli değil",
+        "examples": [
+            "I forgot what I was saying. Never mind.",
+            "Never mind, I'll do it myself.",
+            "Did you say something? No, never mind."
+        ]
+    },
+    {
+        "id": 5,
+        "english": "Sounds good",
+        "turkish": "Kulağa hoş geliyor / Tamamdır",
+        "examples": [
+            "Let's meet at 5 PM. Sounds good!",
+            "A pizza for dinner? Sounds good to me.",
+            "That plan sounds good, let's do it."
+        ]
+    },
+    {
+        "id": 6,
+        "english": "Keep in touch",
+        "turkish": "İrtibatta kalalım / Haberleşelim",
+        "examples": [
+            "It was great seeing you! Keep in touch.",
+            "Let's keep in touch over the summer.",
+            "Give me a call sometime, keep in touch!"
+        ]
+    },
+    {
+        "id": 7,
+        "english": "What's up?",
+        "turkish": "Naber? / Ne var ne yok?",
+        "examples": [
+            "Hey man, what's up?",
+            "What's up with the computer? It's slow.",
+            "Not much is up, just relaxing."
+        ]
+    },
+    {
+        "id": 8,
+        "english": "Good for you",
+        "turkish": "Senin adına sevindim",
+        "examples": [
+            "I finally passed the exam! Good for you!",
+            "I'm starting a new hobby. Good for you.",
+            "Good for you for standing up for yourself."
+        ]
+    },
+    {
+        "id": 9,
+        "english": "No problem",
+        "turkish": "Sorun değil / Rica ederim",
+        "examples": [
+            "Thanks for the help. No problem!",
+            "Sorry I'm late. No problem, come on in.",
+            "Can you hold this? No problem."
+        ]
+    },
+    {
+        "id": 10,
+        "english": "I'll get back to you",
+        "turkish": "Sana geri döneceğim",
+        "examples": [
+            "I'm busy now, I'll get back to you later.",
+            "Let me check the schedule and I'll get back to you.",
+            "I'll get back to you as soon as I can."
+        ]
+    }
+]

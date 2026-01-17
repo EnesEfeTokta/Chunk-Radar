@@ -1,0 +1,17 @@
+[
+  {
+    "id": "default",
+    "name": "Günlük Popüler",
+    "file": "chunks.json"
+  },
+  {
+    "id": "top-200",
+    "name": "Top 200",
+    "file": "top-200.json"
+  },
+  {
+    "id": "test-group",
+    "name": "Test Group",
+    "file": "test-group.json"
+  }
+]
