@@ -6,6 +6,7 @@ interface Chunk {
   english: string;
   turkish: string;
   examples: string[];
+  exampleTranslations?: string[];
 }
 
 interface Group {
@@ -221,17 +222,26 @@ function EditChunkModal({ groupId, chunk, onClose, onSuccess }: { groupId: strin
   const [english, setEnglish] = useState(chunk.english);
   const [turkish, setTurkish] = useState(chunk.turkish);
   const [examples, setExamples] = useState([...chunk.examples, '', '', ''].slice(0, 3));
+  const [exampleTranslations, setExampleTranslations] = useState([...(chunk.exampleTranslations || []), '', '', ''].slice(0, 3));
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const filteredExamples = examples.filter(ex => ex.trim() !== '');
+      const filteredTranslations = exampleTranslations.slice(0, filteredExamples.length);
+
       const res = await fetch(`/api/chunks/${groupId}/${chunk.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chunk: { english, turkish, examples: examples.filter(ex => ex.trim() !== '') }
+          chunk: {
+            english,
+            turkish,
+            examples: filteredExamples,
+            exampleTranslations: filteredTranslations
+          }
         }),
       });
       if (res.ok) {
@@ -269,23 +279,39 @@ function EditChunkModal({ groupId, chunk, onClose, onSuccess }: { groupId: strin
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content modal-large">
         <h2>Chunk Düzenle</h2>
         <form onSubmit={handleSubmit} className="modal-form">
           <input placeholder="İngilizce" value={english} onChange={e => setEnglish(e.target.value)} required />
           <input placeholder="Türkçe" value={turkish} onChange={e => setTurkish(e.target.value)} required />
-          {examples.map((ex, i) => (
-            <input
-              key={i}
-              placeholder={`Örnek Cümle ${i + 1}`}
-              value={ex}
-              onChange={e => {
-                const newExs = [...examples];
-                newExs[i] = e.target.value;
-                setExamples(newExs);
-              }}
-            />
-          ))}
+
+          <div className="examples-section">
+            <label className="section-label">Örnek Cümleler</label>
+            {examples.map((ex, i) => (
+              <div key={i} className="example-row">
+                <input
+                  placeholder={`İngilizce Örnek ${i + 1}`}
+                  value={ex}
+                  onChange={e => {
+                    const newExs = [...examples];
+                    newExs[i] = e.target.value;
+                    setExamples(newExs);
+                  }}
+                />
+                <input
+                  placeholder={`Türkçe Çeviri ${i + 1}`}
+                  value={exampleTranslations[i]}
+                  onChange={e => {
+                    const newTrans = [...exampleTranslations];
+                    newTrans[i] = e.target.value;
+                    setExampleTranslations(newTrans);
+                  }}
+                  className="translation-input"
+                />
+              </div>
+            ))}
+          </div>
+
           <div className="modal-actions">
             <button type="button" className="btn btn-wrong" onClick={handleDelete} disabled={loading}>Sil</button>
             <div style={{ flex: 1 }} />
@@ -353,18 +379,27 @@ function AddChunkModal({ groupId, onClose, onSuccess }: { groupId: string; onClo
   const [english, setEnglish] = useState('');
   const [turkish, setTurkish] = useState('');
   const [examples, setExamples] = useState(['', '', '']);
+  const [exampleTranslations, setExampleTranslations] = useState(['', '', '']);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const filteredExamples = examples.filter(ex => ex.trim() !== '');
+      const filteredTranslations = exampleTranslations.slice(0, filteredExamples.length);
+
       const res = await fetch('/api/chunks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           groupId,
-          chunk: { english, turkish, examples: examples.filter(ex => ex.trim() !== '') }
+          chunk: {
+            english,
+            turkish,
+            examples: filteredExamples,
+            exampleTranslations: filteredTranslations
+          }
         }),
       });
       if (res.ok) {
@@ -383,23 +418,39 @@ function AddChunkModal({ groupId, onClose, onSuccess }: { groupId: string; onClo
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
+      <div className="modal-content modal-large">
         <h2>Yeni Chunk Ekle</h2>
         <form onSubmit={handleSubmit} className="modal-form">
           <input placeholder="İngilizce (Chunk)" value={english} onChange={e => setEnglish(e.target.value)} required />
           <input placeholder="Türkçe Karşılığı" value={turkish} onChange={e => setTurkish(e.target.value)} required />
-          {examples.map((ex, i) => (
-            <input
-              key={i}
-              placeholder={`Örnek Cümle ${i + 1}`}
-              value={ex}
-              onChange={e => {
-                const newExs = [...examples];
-                newExs[i] = e.target.value;
-                setExamples(newExs);
-              }}
-            />
-          ))}
+
+          <div className="examples-section">
+            <label className="section-label">Örnek Cümleler</label>
+            {examples.map((ex, i) => (
+              <div key={i} className="example-row">
+                <input
+                  placeholder={`İngilizce Örnek ${i + 1}`}
+                  value={ex}
+                  onChange={e => {
+                    const newExs = [...examples];
+                    newExs[i] = e.target.value;
+                    setExamples(newExs);
+                  }}
+                />
+                <input
+                  placeholder={`Türkçe Çeviri ${i + 1}`}
+                  value={exampleTranslations[i]}
+                  onChange={e => {
+                    const newTrans = [...exampleTranslations];
+                    newTrans[i] = e.target.value;
+                    setExampleTranslations(newTrans);
+                  }}
+                  className="translation-input"
+                />
+              </div>
+            ))}
+          </div>
+
           <div className="modal-actions">
             <button type="button" className="btn btn-secondary" onClick={onClose}>İptal</button>
             <button type="submit" className="btn btn-primary" disabled={loading}>Ekle</button>
@@ -410,12 +461,14 @@ function AddChunkModal({ groupId, onClose, onSuccess }: { groupId: string; onClo
   );
 }
 
-function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit }: {
+function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, cardElapsed, formatTime }: {
   chunk: Chunk;
   isFlipped: boolean;
   onSingleClick: () => void;
   onDoubleClick: () => void;
-  onEdit: () => void
+  onEdit: () => void;
+  cardElapsed: number;
+  formatTime: (seconds: number) => string;
 }) {
   const [lastClickTime, setLastClickTime] = useState(0);
 
@@ -448,6 +501,7 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit }: {
       <div className="flash-card">
         <div className="card-face card-front">
           <button className="edit-chunk-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎</button>
+          <div className="card-timer">⏱️ {formatTime(cardElapsed)}</div>
           <div className="chunk-info">
             <h2 className="chunk-english">{chunk.english}</h2>
             <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
@@ -459,9 +513,14 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit }: {
             <span className="chunk-turkish-back">{chunk.turkish}</span>
             <div className="examples-list-back">
               {chunk.examples.map((example, idx) => (
-                <p key={idx} className="example-item-back" onClick={(e) => { e.stopPropagation(); speak(example); }}>
-                  {example}
-                </p>
+                <div key={idx} className="example-item-wrapper">
+                  <p className="example-item-back" onClick={(e) => { e.stopPropagation(); speak(example); }}>
+                    {example}
+                  </p>
+                  {chunk.exampleTranslations && chunk.exampleTranslations[idx] && (
+                    <p className="example-translation">{chunk.exampleTranslations[idx]}</p>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -479,6 +538,12 @@ function App() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [progress, setProgress] = useState<ChunkProgress[]>([]);
   const [isFinished, setIsFinished] = useState(false);
+
+  // Timer states
+  const [sessionStartTime] = useState(Date.now());
+  const [sessionElapsed, setSessionElapsed] = useState(0);
+  const [cardStartTime, setCardStartTime] = useState(Date.now());
+  const [cardElapsed, setCardElapsed] = useState(0);
 
   // Modals
   const [showGroupModal, setShowGroupModal] = useState(false);
@@ -506,6 +571,41 @@ function App() {
     }
   };
 
+  const loadProgress = async (groupId: string) => {
+    try {
+      const res = await fetch(`/api/progress/${groupId}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
+    } catch (err) {
+      console.error('Failed to load progress:', err);
+    }
+    return {};
+  };
+
+  const saveProgress = async (groupId: string, chunkId: number, status: ChunkStatus) => {
+    try {
+      await fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId, chunkId, status }),
+      });
+    } catch (err) {
+      console.error('Failed to save progress:', err);
+    }
+  };
+
+  const resetProgress = async (groupId: string) => {
+    try {
+      await fetch(`/api/progress/${groupId}`, { method: 'DELETE' });
+      // Reload chunks to reset UI
+      await fetchChunks(groupId);
+    } catch (err) {
+      console.error('Failed to reset progress:', err);
+    }
+  };
+
   const fetchChunks = useCallback(async (groupId: string) => {
     if (!groupId) return;
 
@@ -520,7 +620,16 @@ function App() {
         setCurrentIndex(0);
         setIsFlipped(false);
         setIsFinished(false);
-        setProgress(shuffled.map(c => ({ chunkId: c.id, status: 'unreviewed' as ChunkStatus })));
+
+        // Load persisted progress
+        const persistedProgress = await loadProgress(groupId);
+        setProgress(shuffled.map(c => ({
+          chunkId: c.id,
+          status: (persistedProgress[c.id] as ChunkStatus) || 'unreviewed'
+        })));
+
+        // Reset card timer
+        setCardStartTime(Date.now());
       }
     } catch (err) {
       console.error(err);
@@ -550,10 +659,24 @@ function App() {
     }
   }, [selectedGroupId, fetchChunks, groups]);
 
+  // Timer update effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSessionElapsed(Math.floor((Date.now() - sessionStartTime) / 1000));
+      setCardElapsed(Math.floor((Date.now() - cardStartTime) / 1000));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [sessionStartTime, cardStartTime]);
+
   const handleAnswer = (status: ChunkStatus) => {
     const newProgress = [...progress];
     newProgress[currentIndex].status = status;
     setProgress(newProgress);
+
+    // Save progress to backend
+    const currentChunkId = sessionChunks[currentIndex].id;
+    saveProgress(selectedGroupId, currentChunkId, status);
 
     // Record stats
     if (status === 'correct') {
@@ -565,6 +688,8 @@ function App() {
     if (currentIndex + 1 < sessionChunks.length) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
+      // Reset card timer for next card
+      setCardStartTime(Date.now());
     } else {
       setIsFinished(true);
     }
@@ -573,6 +698,14 @@ function App() {
   const jumpToCard = (index: number) => {
     setCurrentIndex(index);
     setIsFlipped(false);
+    // Reset card timer when jumping to a card
+    setCardStartTime(Date.now());
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
   const getStatusClass = (status: ChunkStatus) => {
@@ -597,6 +730,7 @@ function App() {
       <nav className="top-nav-modern">
         <div className="nav-left">
           <h1 className="logo-text-nav" onClick={() => window.location.reload()}>Chunk <span className="accent">Radar</span></h1>
+          <div className="timer-display">⏱️ Oturum: {formatTime(sessionElapsed)}</div>
         </div>
 
         <div className="nav-right">
@@ -626,18 +760,23 @@ function App() {
 
       {/* Mini Cards Navigation */}
       {sessionChunks.length > 0 && !isFinished && (
-        <div className="mini-cards-nav">
-          {sessionChunks.map((chunk, idx) => (
-            <div
-              key={chunk.id}
-              className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
-              onClick={() => jumpToCard(idx)}
-              title={`Chunk ${idx + 1}: ${chunk.english}`}
-            >
-              {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
-            </div>
-          ))}
-        </div>
+        <>
+          <div className="mini-cards-nav">
+            {sessionChunks.map((chunk, idx) => (
+              <div
+                key={chunk.id}
+                className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
+                onClick={() => jumpToCard(idx)}
+                title={`Chunk ${idx + 1}: ${chunk.english}`}
+              >
+                {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
+              </div>
+            ))}
+          </div>
+          <div className="reset-container">
+            <button className="reset-btn" onClick={() => resetProgress(selectedGroupId)}>🔄 İlerlemeyi Sıfırla</button>
+          </div>
+        </>
       )}
 
       <main className="game-area">
@@ -650,6 +789,8 @@ function App() {
                 onSingleClick={() => speak(currentChunk.english)}
                 onDoubleClick={() => setIsFlipped(!isFlipped)}
                 onEdit={() => setShowEditChunkModal(currentChunk)}
+                cardElapsed={cardElapsed}
+                formatTime={formatTime}
               />
               {isFlipped && (
                 <div className="controls">
@@ -731,6 +872,99 @@ function App() {
         .nav-btn.secondary { background: var(--glass); color: white; }
         .nav-btn.stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; }
         .nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        /* Timer Display */
+        .timer-display {
+          background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+          padding: 0.5rem 1rem;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: var(--accent-secondary);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .card-timer {
+          position: absolute;
+          top: 1rem;
+          right: 4rem;
+          background: rgba(139, 92, 246, 0.15);
+          padding: 0.4rem 0.8rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: var(--accent-secondary);
+          border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        /* Reset Button */
+        .reset-container {
+          display: flex;
+          justify-content: center;
+          margin-bottom: 1.5rem;
+        }
+
+        .reset-btn {
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.15));
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          color: #f97316;
+          padding: 0.6rem 1.2rem;
+          border-radius: 12px;
+          cursor: pointer;
+          font-weight: 600;
+          transition: all 0.2s;
+          font-family: 'Outfit', sans-serif;
+          font-size: 0.85rem;
+        }
+
+        .reset-btn:hover {
+          background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(249, 115, 22, 0.25));
+          transform: translateY(-1px);
+        }
+
+        /* Modal Large */
+        .modal-large { max-width: 600px; }
+
+        /* Examples Section in Modal */
+        .examples-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+        }
+
+        .section-label {
+          color: var(--text-muted);
+          font-size: 0.85rem;
+          margin-bottom: 0.3rem;
+        }
+
+        .example-row {
+          display: flex;
+          flex-direction: column;
+          gap: 0.4rem;
+        }
+
+        .translation-input {
+          background: rgba(139, 92, 246, 0.1) !important;
+          border-color: rgba(139, 92, 246, 0.3) !important;
+          font-size: 0.9rem !important;
+        }
+
+        /* Example Translation Display */
+        .example-item-wrapper {
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+
+        .example-translation {
+          color: rgba(139, 92, 246, 0.6);
+          font-size: 0.8rem;
+          margin: 0;
+          padding-left: 1rem;
+          font-style: italic;
+          opacity: 0.8;
+        }
 
         /* Group Tabs */
         .group-tabs-container {

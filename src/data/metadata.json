@@ -2,14 +2,47 @@
   "groups": [
     {
       "id": "default",
-      "name": "Günlük Popüler",
-      "file": "chunks.json"
+      "name": "Günlük Popüler 1",
+      "file": "gnlk-popler-1.json"
     },
     {
-      "id": "top-200",
-      "name": "Top 200",
-      "file": "top-200.json"
+      "id": "gnlk-popler-2",
+      "name": "Günlük Popüler 2",
+      "file": "gnlk-popler-2.json"
     }
   ],
-  "stats": []
+  "stats": [
+    {
+      "date": "2026-01-19",
+      "correct": 7,
+      "wrong": 1,
+      "total": 8
+    },
+    {
+      "date": "2026-01-20",
+      "correct": 22,
+      "wrong": 5,
+      "total": 27
+    },
+    {
+      "date": "2026-01-21",
+      "correct": 0,
+      "wrong": 2,
+      "total": 2
+    },
+    {
+      "date": "2026-01-22",
+      "correct": 3,
+      "wrong": 0,
+      "total": 3
+    }
+  ],
+  "progress": {
+    "default": {
+      "17": "correct",
+      "18": "correct",
+      "28": "skipped"
+    },
+    "top-200": {}
+  }
 }

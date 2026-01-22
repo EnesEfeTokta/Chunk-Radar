@@ -356,6 +356,63 @@ app.post('/api/stats', (req, res) => {
     }
 });
 
+// Progress API - Get progress for a group
+app.get('/api/progress/:groupId', (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const metadata = getMetadata();
+        const progress = metadata.progress || {};
+        res.json(progress[groupId] || {});
+    } catch (err) {
+        console.error('GET /api/progress error:', err);
+        res.status(500).json({ error: 'Failed to read progress' });
+    }
+});
+
+// Progress API - Save/update chunk progress
+app.post('/api/progress', (req, res) => {
+    try {
+        const { groupId, chunkId, status } = req.body;
+        if (!groupId || !chunkId || !status) {
+            return res.status(400).json({ error: 'groupId, chunkId, and status are required' });
+        }
+
+        const metadata = getMetadata();
+        if (!metadata.progress) {
+            metadata.progress = {};
+        }
+        if (!metadata.progress[groupId]) {
+            metadata.progress[groupId] = {};
+        }
+
+        metadata.progress[groupId][chunkId] = status;
+        saveMetadata(metadata);
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('POST /api/progress error:', err);
+        res.status(500).json({ error: 'Failed to save progress' });
+    }
+});
+
+// Progress API - Reset progress for a group
+app.delete('/api/progress/:groupId', (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const metadata = getMetadata();
+
+        if (metadata.progress && metadata.progress[groupId]) {
+            metadata.progress[groupId] = {};
+            saveMetadata(metadata);
+        }
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error('DELETE /api/progress error:', err);
+        res.status(500).json({ error: 'Failed to reset progress' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Persistence server running at http://localhost:${PORT}`);
 });

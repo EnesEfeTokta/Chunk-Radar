@@ -1,0 +1,752 @@
+[
+    {
+        "id": 1,
+        "english": "Good morning",
+        "turkish": "Günaydın",
+        "examples": [
+            "Good morning! How are you?",
+            "Good morning mom.",
+            "I said good morning to the teacher."
+        ],
+        "exampleTranslations": [
+            "Günaydın! Nasılsın?",
+            "Günaydın anne.",
+            "Öğretmene günaydın dedim."
+        ]
+    },
+    {
+        "id": 2,
+        "english": "How are you?",
+        "turkish": "Nasılsın?",
+        "examples": [
+            "Hello, how are you?",
+            "How are you doing today?",
+            "I am fine, how are you?"
+        ],
+        "exampleTranslations": [
+            "Merhaba, nasılsın?",
+            "Bugün nasılsın?",
+            "İyiyim, sen nasılsın?"
+        ]
+    },
+    {
+        "id": 3,
+        "english": "Thank you very much",
+        "turkish": "Çok teşekkür ederim",
+        "examples": [
+            "Thank you very much for your help.",
+            "I like this gift, thank you very much.",
+            "Thank you very much for coming."
+        ],
+        "exampleTranslations": [
+            "Yardımın için çok teşekkür ederim.",
+            "Bu hediyeyi beğendim, çok teşekkür ederim.",
+            "Geldiğin için çok teşekkür ederim."
+        ]
+    },
+    {
+        "id": 4,
+        "english": "You're welcome",
+        "turkish": "Rica ederim / Bir şey değil",
+        "examples": [
+            "Thank you! You're welcome.",
+            "You're welcome, anytime.",
+            "Just say you're welcome."
+        ],
+        "exampleTranslations": [
+            "Teşekkürler! Rica ederim.",
+            "Rica ederim, her zaman.",
+            "Sadece rica ederim de."
+        ]
+    },
+    {
+        "id": 5,
+        "english": "Nice to meet you",
+        "turkish": "Tanıştığımıza memnun oldum",
+        "examples": [
+            "My name is Ali. Nice to meet you.",
+            "Nice to meet you too.",
+            "It is nice to meet you finally."
+        ],
+        "exampleTranslations": [
+            "Adım Ali. Tanıştığımıza memnun oldum.",
+            "Ben de tanıştığımıza memnun oldum.",
+            "Sonunda tanıştığımıza memnun oldum."
+        ]
+    },
+    {
+        "id": 6,
+        "english": "Excuse me",
+        "turkish": "Affedersiniz / Pardon",
+        "examples": [
+            "Excuse me, can I ask a question?",
+            "Excuse me, where is the bus stop?",
+            "Oh, excuse me, I didn't see you."
+        ],
+        "exampleTranslations": [
+            "Affedersiniz, bir soru sorabilir miyim?",
+            "Pardon, otobüs durağı nerede?",
+            "Oh, affedersiniz, sizi görmedim."
+        ]
+    },
+    {
+        "id": 7,
+        "english": "I'm sorry",
+        "turkish": "Üzgünüm / Özür dilerim",
+        "examples": [
+            "I'm sorry regarding the mistake.",
+            "I'm sorry I am late.",
+            "Are you okay? I'm sorry."
+        ],
+        "exampleTranslations": [
+            "Hata konusunda üzgünüm.",
+            "Geç kaldığım için özür dilerim.",
+            "İyi misin? Üzgünüm."
+        ]
+    },
+    {
+        "id": 8,
+        "english": "I don't know",
+        "turkish": "Bilmiyorum",
+        "examples": [
+            "Where is he? I don't know.",
+            "I don't know the answer.",
+            "I honestly don't know."
+        ],
+        "exampleTranslations": [
+            "O nerede? Bilmiyorum.",
+            "Cevabı bilmiyorum.",
+            "Dürüstçe söylüyorum, bilmiyorum."
+        ]
+    },
+    {
+        "id": 9,
+        "english": "See you later",
+        "turkish": "Sonra görüşürüz",
+        "examples": [
+            "I have to go, see you later.",
+            "Goodbye! See you later.",
+            "See you later at the cinema."
+        ],
+        "exampleTranslations": [
+            "Gitmem lazım, sonra görüşürüz.",
+            "Hoşça kal! Sonra görüşürüz.",
+            "Sinemada sonra görüşürüz."
+        ]
+    },
+    {
+        "id": 10,
+        "english": "What is your name?",
+        "turkish": "Adın ne?",
+        "examples": [
+            "Hi, what is your name?",
+            "I forgot, what is your name?",
+            "Can you tell me what is your name?"
+        ],
+        "exampleTranslations": [
+            "Selam, adın ne?",
+            "Unuttum, adın neydi?",
+            "Bana adının ne olduğunu söyleyebilir misin?"
+        ]
+    },
+    {
+        "id": 11,
+        "english": "Where are you from?",
+        "turkish": "Nerelisin?",
+        "examples": [
+            "You speak English well. Where are you from?",
+            "I am from Turkey. Where are you from?",
+            "Where are you from originally?"
+        ],
+        "exampleTranslations": [
+            "İyi İngilizce konuşuyorsun. Nerelisin?",
+            "Ben Türkiyeliyim. Sen nerelisin?",
+            "Aslen nerelisin?"
+        ]
+    },
+    {
+        "id": 12,
+        "english": "I don't understand",
+        "turkish": "Anlamıyorum",
+        "examples": [
+            "Can you repeat? I don't understand.",
+            "I don't understand this lesson.",
+            "Sorry, I don't understand French."
+        ],
+        "exampleTranslations": [
+            "Tekrar edebilir misin? Anlamıyorum.",
+            "Bu dersi anlamıyorum.",
+            "Üzgünüm, Fransızca anlamıyorum."
+        ]
+    },
+    {
+        "id": 13,
+        "english": "Can you help me?",
+        "turkish": "Bana yardım edebilir misin?",
+        "examples": [
+            "Excuse me, can you help me?",
+            "The bag is heavy. Can you help me?",
+            "I am lost. Can you help me?"
+        ],
+        "exampleTranslations": [
+            "Affedersiniz, bana yardım edebilir misiniz?",
+            "Çanta ağır. Bana yardım edebilir misin?",
+            "Kayboldum. Bana yardım edebilir misin?"
+        ]
+    },
+    {
+        "id": 14,
+        "english": "Good night",
+        "turkish": "İyi geceler",
+        "examples": [
+            "I am going to sleep. Good night.",
+            "Good night, sweet dreams.",
+            "See you tomorrow, good night."
+        ],
+        "exampleTranslations": [
+            "Uyumaya gidiyorum. İyi geceler.",
+            "İyi geceler, tatlı rüyalar.",
+            "Yarın görüşürüz, iyi geceler."
+        ]
+    },
+    {
+        "id": 15,
+        "english": "Have a nice day",
+        "turkish": "İyi günler",
+        "examples": [
+            "Thanks for shopping. Have a nice day.",
+            "Goodbye, have a nice day.",
+            "Have a nice day at school."
+        ],
+        "exampleTranslations": [
+            "Alışveriş yaptığınız için teşekkürler. İyi günler.",
+            "Hoşça kal, iyi günler.",
+            "Okulda iyi günler."
+        ]
+    },
+    {
+        "id": 16,
+        "english": "What time is it?",
+        "turkish": "Saat kaç?",
+        "examples": [
+            "Excuse me, what time is it?",
+            "Do you know what time is it?",
+            "What time is it right now?"
+        ],
+        "exampleTranslations": [
+            "Pardon, saat kaç?",
+            "Saatin kaç olduğunu biliyor musun?",
+            "Şu anda saat kaç?"
+        ]
+    },
+    {
+        "id": 17,
+        "english": "I'm hungry",
+        "turkish": "Açım",
+        "examples": [
+            "Let's eat something, I'm hungry.",
+            "Are you hungry? Yes, I'm hungry.",
+            "I'm hungry, is dinner ready?"
+        ],
+        "exampleTranslations": [
+            "Hadi bir şeyler yiyelim, açım.",
+            "Aç mısın? Evet, açım.",
+            "Açım, akşam yemeği hazır mı?"
+        ]
+    },
+    {
+        "id": 18,
+        "english": "I'm thirsty",
+        "turkish": "Susadım",
+        "examples": [
+            "Can I have some water? I'm thirsty.",
+            "It is hot and I'm thirsty.",
+            "I'm thirsty after the game."
+        ],
+        "exampleTranslations": [
+            "Biraz su alabilir miyim? Susadım.",
+            "Hava sıcak ve susadım.",
+            "Maçtan sonra susadım."
+        ]
+    },
+    {
+        "id": 19,
+        "english": "I'm tired",
+        "turkish": "Yorgunum",
+        "examples": [
+            "I worked all day, I'm tired.",
+            "I want to sleep because I'm tired.",
+            "You look tired. Yes, I'm tired."
+        ],
+        "exampleTranslations": [
+            "Bütün gün çalıştım, yorgunum.",
+            "Uyumak istiyorum çünkü yorgunum.",
+            "Yorgun görünüyorsun. Evet, yorgunum."
+        ]
+    },
+    {
+        "id": 20,
+        "english": "Let's go",
+        "turkish": "Hadi gidelim",
+        "examples": [
+            "The taxi is here. Let's go.",
+            "Let's go to the park.",
+            "Are you ready? Let's go."
+        ],
+        "exampleTranslations": [
+            "Taksi burada. Hadi gidelim.",
+            "Hadi parka gidelim.",
+            "Hazır mısın? Hadi gidelim."
+        ]
+    },
+    {
+        "id": 21,
+        "english": "Of course",
+        "turkish": "Elbette / Tabii ki",
+        "examples": [
+            "Can I sit here? Of course.",
+            "Of course I will help you.",
+            "Do you like ice cream? Of course."
+        ],
+        "exampleTranslations": [
+            "Buraya oturabilir miyim? Elbette.",
+            "Elbette sana yardım edeceğim.",
+            "Dondurma sever misin? Tabii ki."
+        ]
+    },
+    {
+        "id": 22,
+        "english": "Wait a minute",
+        "turkish": "Bir dakika bekle",
+        "examples": [
+            "Wait a minute, I forgot my keys.",
+            "Please wait a minute here.",
+            "Can you wait a minute?"
+        ],
+        "exampleTranslations": [
+            "Bir dakika bekle, anahtarlarımı unuttum.",
+            "Lütfen burada bir dakika bekle.",
+            "Bir dakika bekleyebilir misin?"
+        ]
+    },
+    {
+        "id": 23,
+        "english": "Good job",
+        "turkish": "İyi iş / Aferin",
+        "examples": [
+            "You finished the project. Good job!",
+            "Good job on the exam.",
+            "The room is clean. Good job."
+        ],
+        "exampleTranslations": [
+            "Projeyi bitirdin. İyi iş!",
+            "Sınavda iyi iş çıkardın.",
+            "Oda temiz. Aferin."
+        ]
+    },
+    {
+        "id": 24,
+        "english": "How much is it?",
+        "turkish": "Ne kadar? / Fiyatı nedir?",
+        "examples": [
+            "I like this shirt. How much is it?",
+            "How much is it for a ticket?",
+            "Excuse me, how much is it?"
+        ],
+        "exampleTranslations": [
+            "Bu gömleği beğendim. Fiyatı nedir?",
+            "Bir bilet ne kadar?",
+            "Pardon, bu ne kadar?"
+        ]
+    },
+    {
+        "id": 25,
+        "english": "I agree",
+        "turkish": "Katılıyorum",
+        "examples": [
+            "Yes, I agree with you.",
+            "I agree, the movie was good.",
+            "Do you agree? Yes, I agree."
+        ],
+        "exampleTranslations": [
+            "Evet, sana katılıyorum.",
+            "Katılıyorum, film güzeldi.",
+            "Katılıyor musun? Evet, katılıyorum."
+        ]
+    },
+    {
+        "id": 26,
+        "english": "See you tomorrow",
+        "turkish": "Yarın görüşürüz",
+        "examples": [
+            "Class is over. See you tomorrow.",
+            "I am going home. See you tomorrow.",
+            "See you tomorrow at 9 AM."
+        ],
+        "exampleTranslations": [
+            "Ders bitti. Yarın görüşürüz.",
+            "Eve gidiyorum. Yarın görüşürüz.",
+            "Yarın sabah 9'da görüşürüz."
+        ]
+    },
+    {
+        "id": 27,
+        "english": "What is this?",
+        "turkish": "Bu nedir?",
+        "examples": [
+            "I found a box. What is this?",
+            "What is this in your hand?",
+            "I don't know what is this."
+        ],
+        "exampleTranslations": [
+            "Bir kutu buldum. Bu nedir?",
+            "Elindeki bu şey nedir?",
+            "Bunun ne olduğunu bilmiyorum."
+        ]
+    },
+    {
+        "id": 28,
+        "english": "No problem",
+        "turkish": "Sorun değil",
+        "examples": [
+            "Thanks for waiting. No problem.",
+            "Sorry I broke the glass. No problem.",
+            "Can you help? Sure, no problem."
+        ],
+        "exampleTranslations": [
+            "Beklediğin için teşekkürler. Sorun değil.",
+            "Bardağı kırdığım için üzgünüm. Sorun değil.",
+            "Yardım edebilir misin? Tabii, sorun değil."
+        ]
+    },
+    {
+        "id": 29,
+        "english": "Don't worry",
+        "turkish": "Endişelenme",
+        "examples": [
+            "Don't worry, be happy.",
+            "I will fix it, don't worry.",
+            "Don't worry about the money."
+        ],
+        "exampleTranslations": [
+            "Endişelenme, mutlu ol.",
+            "Onu halledeceğim, endişelenme.",
+            "Para konusunda endişelenme."
+        ]
+    },
+    {
+        "id": 30,
+        "english": "Be careful",
+        "turkish": "Dikkatli ol",
+        "examples": [
+            "The floor is wet. Be careful.",
+            "Be careful driving tonight.",
+            "This knife is sharp, be careful."
+        ],
+        "exampleTranslations": [
+            "Yer ıslak. Dikkatli ol.",
+            "Bu gece araba sürerken dikkatli ol.",
+            "Bu bıçak keskin, dikkatli ol."
+        ]
+    },
+    {
+        "id": 31,
+        "english": "Good luck",
+        "turkish": "İyi şanslar",
+        "examples": [
+            "You have a match today. Good luck!",
+            "Good luck with your new job.",
+            "I wish you good luck."
+        ],
+        "exampleTranslations": [
+            "Bugün maçın var. İyi şanslar!",
+            "Yeni işinde iyi şanslar.",
+            "Sana iyi şanslar dilerim."
+        ]
+    },
+    {
+        "id": 32,
+        "english": "Just a moment",
+        "turkish": "Bir saniye / Çok kısa bir süre",
+        "examples": [
+            "Just a moment please, I am checking.",
+            "Wait just a moment.",
+            "I will be back in just a moment."
+        ],
+        "exampleTranslations": [
+            "Bir saniye lütfen, kontrol ediyorum.",
+            "Çok kısa bekle.",
+            "Bir saniye içinde döneceğim."
+        ]
+    },
+    {
+        "id": 33,
+        "english": "I think so",
+        "turkish": "Sanırım öyle / Bence öyle",
+        "examples": [
+            "Is he coming? I think so.",
+            "Is it going to rain? I think so.",
+            "I think so, but I am not sure."
+        ],
+        "exampleTranslations": [
+            "O geliyor mu? Sanırım öyle.",
+            "Yağmur yağacak mı? Sanırım öyle.",
+            "Sanırım öyle ama emin değilim."
+        ]
+    },
+    {
+        "id": 34,
+        "english": "Are you ready?",
+        "turkish": "Hazır mısın?",
+        "examples": [
+            "The taxi is waiting. Are you ready?",
+            "Are you ready to order?",
+            "Are you ready for the exam?"
+        ],
+        "exampleTranslations": [
+            "Taksi bekliyor. Hazır mısın?",
+            "Sipariş vermeye hazır mısınız?",
+            "Sınav için hazır mısın?"
+        ]
+    },
+    {
+        "id": 35,
+        "english": "Me too",
+        "turkish": "Ben de",
+        "examples": [
+            "I love pizza. Me too.",
+            "I am tired. Me too.",
+            "I want to go home. Me too."
+        ],
+        "exampleTranslations": [
+            "Pizzayı severim. Ben de.",
+            "Yorgunum. Ben de.",
+            "Eve gitmek istiyorum. Ben de."
+        ]
+    },
+    {
+        "id": 36,
+        "english": "Really?",
+        "turkish": "Gerçekten mi?",
+        "examples": [
+            "I won the lottery. Really?",
+            "She is moving to London. Really?",
+            "This car is very cheap. Really?"
+        ],
+        "exampleTranslations": [
+            "Piyangoyu kazandım. Gerçekten mi?",
+            "O Londra'ya taşınıyor. Gerçekten mi?",
+            "Bu araba çok ucuz. Gerçekten mi?"
+        ]
+    },
+    {
+        "id": 37,
+        "english": "Come here",
+        "turkish": "Buraya gel",
+        "examples": [
+            "Please come here.",
+            "Come here and look at this.",
+            "Can you come here for a second?"
+        ],
+        "exampleTranslations": [
+            "Lütfen buraya gel.",
+            "Buraya gel ve şuna bak.",
+            "Bir saniyeliğine buraya gelebilir misin?"
+        ]
+    },
+    {
+        "id": 38,
+        "english": "Sit down",
+        "turkish": "Otur / Oturun",
+        "examples": [
+            "Please sit down.",
+            "Sit down and relax.",
+            "Don't stand up, sit down."
+        ],
+        "exampleTranslations": [
+            "Lütfen oturun.",
+            "Otur ve rahatla.",
+            "Ayağa kalkma, otur."
+        ]
+    },
+    {
+        "id": 39,
+        "english": "What happened?",
+        "turkish": "Ne oldu?",
+        "examples": [
+            "You look sad. What happened?",
+            "I heard a noise. What happened?",
+            "Tell me, what happened yesterday?"
+        ],
+        "exampleTranslations": [
+            "Üzgün görünüyorsun. Ne oldu?",
+            "Bir ses duydum. Ne oldu?",
+            "Söyle bana, dün ne oldu?"
+        ]
+    },
+    {
+        "id": 40,
+        "english": "Take care",
+        "turkish": "Kendine iyi bak",
+        "examples": [
+            "Goodbye, take care.",
+            "Take care of yourself.",
+            "See you next week, take care."
+        ],
+        "exampleTranslations": [
+            "Hoşça kal, kendine iyi bak.",
+            "Kendine iyi bak.",
+            "Gelecek hafta görüşürüz, kendine iyi bak."
+        ]
+    },
+    {
+        "id": 41,
+        "english": "Not yet",
+        "turkish": "Henüz değil",
+        "examples": [
+            "Are you finished? Not yet.",
+            "Is the bus here? Not yet.",
+            "I am not yet ready."
+        ],
+        "exampleTranslations": [
+            "Bitirdin mi? Henüz değil.",
+            "Otobüs geldi mi? Henüz değil.",
+            "Henüz hazır değilim."
+        ]
+    },
+    {
+        "id": 42,
+        "english": "Maybe",
+        "turkish": "Belki",
+        "examples": [
+            "Will you come? Maybe.",
+            "Maybe we can go tomorrow.",
+            "Is it true? Maybe."
+        ],
+        "exampleTranslations": [
+            "Gelecek misin? Belki.",
+            "Belki yarın gidebiliriz.",
+            "Bu doğru mu? Belki."
+        ]
+    },
+    {
+        "id": 43,
+        "english": "I don't like it",
+        "turkish": "Bunu sevmedim / Hoşuma gitmedi",
+        "examples": [
+            "This food is cold, I don't like it.",
+            "Do you like the movie? No, I don't like it.",
+            "I don't like it when it rains."
+        ],
+        "exampleTranslations": [
+            "Bu yemek soğuk, sevmedim.",
+            "Filmi sevdin mi? Hayır, hoşuma gitmedi.",
+            "Yağmur yağdığında sevmiyorum."
+        ]
+    },
+    {
+        "id": 44,
+        "english": "Where is the bathroom?",
+        "turkish": "Tuvalet nerede?",
+        "examples": [
+            "Excuse me, where is the bathroom?",
+            "Can you show me where is the bathroom?",
+            "Is there a bathroom here? Where is the bathroom?"
+        ],
+        "exampleTranslations": [
+            "Pardon, tuvalet nerede?",
+            "Bana tuvaletin nerede olduğunu gösterebilir misin?",
+            "Burada bir tuvalet var mı? Tuvalet nerede?"
+        ]
+    },
+    {
+        "id": 45,
+        "english": "Call me",
+        "turkish": "Beni ara",
+        "examples": [
+            "Call me when you arrive.",
+            "If you need help, call me.",
+            "Please call me tomorrow."
+        ],
+        "exampleTranslations": [
+            "Vardığında beni ara.",
+            "Yardıma ihtiyacın olursa beni ara.",
+            "Lütfen yarın beni ara."
+        ]
+    },
+    {
+        "id": 46,
+        "english": "Happy Birthday",
+        "turkish": "Doğum günün kutlu olsun",
+        "examples": [
+            "Happy Birthday to you!",
+            "It is her birthday. Happy Birthday!",
+            "I bought a gift for your Happy Birthday."
+        ],
+        "exampleTranslations": [
+            "Doğum günün kutlu olsun!",
+            "Bugün onun doğum günü. Doğum günün kutlu olsun!",
+            "Doğum günün için bir hediye aldım."
+        ]
+    },
+    {
+        "id": 47,
+        "english": "I am lost",
+        "turkish": "Kayboldum",
+        "examples": [
+            "Can you help me? I am lost.",
+            "I think I am lost in the city.",
+            "I am lost, where is the hotel?"
+        ],
+        "exampleTranslations": [
+            "Bana yardım edebilir misin? Kayboldum.",
+            "Sanırım şehirde kayboldum.",
+            "Kayboldum, otel nerede?"
+        ]
+    },
+    {
+        "id": 48,
+        "english": "Turn on the light",
+        "turkish": "Işığı aç",
+        "examples": [
+            "It is dark. Turn on the light.",
+            "Please turn on the light.",
+            "Can you turn on the light?"
+        ],
+        "exampleTranslations": [
+            "Hava karanlık. Işığı aç.",
+            "Lütfen ışğı aç.",
+            "Işığı açabilir misin?"
+        ]
+    },
+    {
+        "id": 49,
+        "english": "Look at this",
+        "turkish": "Buna bak",
+        "examples": [
+            "Hey, look at this picture.",
+            "Look at this, it is broken.",
+            "Come and look at this."
+        ],
+        "exampleTranslations": [
+            "Hey, şu resme bak.",
+            "Buna bak, kırılmış.",
+            "Gel ve buna bak."
+        ]
+    },
+    {
+        "id": 50,
+        "english": "Keep quiet",
+        "turkish": "Sessiz ol",
+        "examples": [
+            "The baby is sleeping, keep quiet.",
+            "Please keep quiet in the library.",
+            "You must keep quiet during the exam."
+        ],
+        "exampleTranslations": [
+            "Bebek uyuyor, sessiz ol.",
+            "Kütüphanede lütfen sessiz olun.",
+            "Sınav sırasında sessiz olmalısın."
+        ]
+    }
+]
