@@ -9,6 +9,11 @@
       "id": "gnlk-popler-2",
       "name": "Günlük Popüler 2",
       "file": "gnlk-popler-2.json"
+    },
+    {
+      "id": "gnlk-popler-3",
+      "name": "Günlük Popüler 3",
+      "file": "gnlk-popler-3.json"
     }
   ],
   "stats": [
@@ -32,17 +37,74 @@
     },
     {
       "date": "2026-01-22",
-      "correct": 3,
+      "correct": 49,
       "wrong": 0,
-      "total": 3
+      "total": 49
+    },
+    {
+      "date": "2026-01-24",
+      "correct": 11,
+      "wrong": 0,
+      "total": 11
+    },
+    {
+      "date": "2026-01-25",
+      "correct": 33,
+      "wrong": 1,
+      "total": 34
+    },
+    {
+      "date": "2026-01-26",
+      "correct": 7,
+      "wrong": 2,
+      "total": 9
+    },
+    {
+      "date": "2026-01-27",
+      "correct": 29,
+      "wrong": 1,
+      "total": 30
+    },
+    {
+      "date": "2026-01-28",
+      "correct": 13,
+      "wrong": 0,
+      "total": 13
+    },
+    {
+      "date": "2026-01-29",
+      "correct": 10,
+      "wrong": 1,
+      "total": 11
+    },
+    {
+      "date": "2026-01-30",
+      "correct": 9,
+      "wrong": 0,
+      "total": 9
     }
   ],
   "progress": {
     "default": {
-      "17": "correct",
-      "18": "correct",
-      "28": "skipped"
+      "1": "correct",
+      "2": "correct",
+      "21": "correct",
+      "26": "correct",
+      "30": "correct"
     },
-    "top-200": {}
+    "top-200": {},
+    "gnlk-popler-2": {
+      "19": "correct",
+      "20": "correct",
+      "47": "correct",
+      "50": "correct"
+    },
+    "gnlk-popler-3": {
+      "7": "skipped",
+      "8": "skipped",
+      "9": "skipped",
+      "14": "skipped",
+      "30": "skipped"
+    }
   }
 }

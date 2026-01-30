@@ -29,15 +29,62 @@ interface ChunkProgress {
   status: ChunkStatus;
 }
 
-const speak = (text: string) => {
+interface StreakInfo {
+  currentStreak: number;
+  longestStreak: number;
+  todayCount: number;
+  dailyGoal: number;
+  goalReached: boolean;
+}
+
+interface Settings {
+  dailyGoal: number;
+  ttsSpeed: number;
+  ttsVoice: string;
+}
+
+interface ConfidenceData {
+  level: number;
+  nextReview: string | null;
+  lastReviewed?: string;
+}
+
+type FocusMode = 'all' | 'wrong' | 'skipped' | 'review';
+
+const speak = (text: string, rate: number = 0.85, voice: string = 'en-US') => {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   const voices = window.speechSynthesis.getVoices();
-  const preferredVoice = voices.find(v => v.name.includes('Google US English') || v.name.includes('Samantha') || v.lang === 'en-US');
+  const preferredVoice = voices.find(v =>
+    voice === 'en-GB'
+      ? v.lang === 'en-GB' || v.name.includes('British')
+      : v.name.includes('Google US English') || v.name.includes('Samantha') || v.lang === 'en-US'
+  );
   if (preferredVoice) utterance.voice = preferredVoice;
-  utterance.lang = 'en-US';
-  utterance.rate = 0.85;
+  utterance.lang = voice;
+  utterance.rate = rate;
   window.speechSynthesis.speak(utterance);
+};
+
+const speakSequence = async (texts: string[], rate: number = 0.85, voice: string = 'en-US') => {
+  for (const text of texts) {
+    await new Promise<void>((resolve) => {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v =>
+        voice === 'en-GB'
+          ? v.lang === 'en-GB' || v.name.includes('British')
+          : v.name.includes('Google US English') || v.name.includes('Samantha') || v.lang === 'en-US'
+      );
+      if (preferredVoice) utterance.voice = preferredVoice;
+      utterance.lang = voice;
+      utterance.rate = rate;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.speak(utterance);
+    });
+  }
 };
 
 function StatisticsDashboard({ onClose }: { onClose: () => void }) {
@@ -140,6 +187,273 @@ function StatisticsDashboard({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+// Speech Practice Modal with Web Speech Recognition
+interface PracticeSentence {
+  english: string;
+  turkish: string;
+}
+
+function SpeechPracticeModal({
+  sentences,
+  onClose,
+  ttsSpeed = 0.85,
+  ttsVoice = 'en-US'
+}: {
+  sentences: PracticeSentence[];
+  onClose: () => void;
+  ttsSpeed?: number;
+  ttsVoice?: string;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [phase, setPhase] = useState<'ready' | 'listening' | 'countdown' | 'result'>('ready');
+  const [countdown, setCountdown] = useState(3);
+  const [spokenText, setSpokenText] = useState('');
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [score, setScore] = useState({ correct: 0, wrong: 0 });
+  const [isFinished, setIsFinished] = useState(false);
+
+  const currentSentence = sentences[currentIndex];
+
+  // Normalize text for comparison
+  const normalizeText = (text: string) => {
+    return text
+      .toLowerCase()
+      .replace(/[.,!?;:'"]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  // Calculate similarity between two strings
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    const s1 = normalizeText(str1);
+    const s2 = normalizeText(str2);
+
+    if (s1 === s2) return 1;
+
+    const words1 = s1.split(' ');
+    const words2 = s2.split(' ');
+    const commonWords = words1.filter(w => words2.includes(w));
+
+    return commonWords.length / Math.max(words1.length, words2.length);
+  };
+
+  // Start practice - TTS reads the sentence, then countdown
+  const startPractice = async () => {
+    setPhase('ready');
+    setSpokenText('');
+
+    // Read the sentence aloud
+    await new Promise<void>((resolve) => {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(currentSentence.english);
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v =>
+        ttsVoice === 'en-GB'
+          ? v.lang === 'en-GB' || v.name.includes('British')
+          : v.name.includes('Google US English') || v.name.includes('Samantha') || v.lang === 'en-US'
+      );
+      if (preferredVoice) utterance.voice = preferredVoice;
+      utterance.lang = ttsVoice;
+      utterance.rate = ttsSpeed;
+      utterance.onend = () => resolve();
+      utterance.onerror = () => resolve();
+      window.speechSynthesis.speak(utterance);
+    });
+
+    // Start countdown
+    setPhase('countdown');
+    setCountdown(3);
+
+    for (let i = 3; i >= 1; i--) {
+      setCountdown(i);
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
+    // Start listening
+    startListening();
+  };
+
+  // Start speech recognition
+  const startListening = () => {
+    setPhase('listening');
+    setSpokenText('');
+
+    // Check for browser support
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert('Tarayıcınız ses tanıma desteklemiyor. Chrome kullanmayı deneyin.');
+      setPhase('ready');
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 3;
+
+    let finalTranscript = '';
+
+    recognition.onresult = (event: any) => {
+      const transcript = Array.from(event.results)
+        .map((result: any) => result[0].transcript)
+        .join('');
+      finalTranscript = transcript;
+      setSpokenText(transcript);
+    };
+
+    recognition.onend = () => {
+      setPhase('result');
+      // Check if correct (at least 80% similarity)
+      const similarity = calculateSimilarity(finalTranscript || '', currentSentence.english);
+      const correct = similarity >= 0.7;
+      setIsCorrect(correct);
+
+      if (correct) {
+        setScore(prev => ({ ...prev, correct: prev.correct + 1 }));
+      } else {
+        setScore(prev => ({ ...prev, wrong: prev.wrong + 1 }));
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error:', event.error);
+      setPhase('result');
+      setIsCorrect(false);
+      setScore(prev => ({ ...prev, wrong: prev.wrong + 1 }));
+    };
+
+    recognition.start();
+
+    // Auto-stop after 8 seconds
+    setTimeout(() => {
+      try {
+        recognition.stop();
+      } catch {
+        // Already stopped
+      }
+    }, 8000);
+  };
+
+  // Move to next sentence or retry
+  const handleNext = () => {
+    if (currentIndex + 1 < sentences.length) {
+      setCurrentIndex(currentIndex + 1);
+      setPhase('ready');
+      setSpokenText('');
+    } else {
+      setIsFinished(true);
+    }
+  };
+
+  const handleRetry = () => {
+    setPhase('ready');
+    setSpokenText('');
+    startPractice();
+  };
+
+  if (isFinished) {
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content speech-modal">
+          <div className="modal-header">
+            <h2>🎉 Pratik Tamamlandı!</h2>
+            <button className="close-btn" onClick={onClose}>&times;</button>
+          </div>
+          <div className="speech-finish">
+            <div className="speech-score">
+              <div className="score-item correct">
+                <span className="score-label">Doğru</span>
+                <span className="score-value">{score.correct}</span>
+              </div>
+              <div className="score-item wrong">
+                <span className="score-label">Yanlış</span>
+                <span className="score-value">{score.wrong}</span>
+              </div>
+            </div>
+            <div className="speech-accuracy">
+              Başarı: %{Math.round((score.correct / (score.correct + score.wrong || 1)) * 100)}
+            </div>
+            <button className="btn btn-primary" onClick={onClose}>Kapat</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content speech-modal">
+        <div className="modal-header">
+          <h2>🎤 Konuşma Pratiği</h2>
+          <span className="speech-progress">{currentIndex + 1} / {sentences.length}</span>
+          <button className="close-btn" onClick={onClose}>&times;</button>
+        </div>
+
+        <div className="speech-content">
+          {/* Sentence Display */}
+          <div className="speech-sentence">
+            <p className="sentence-english">{currentSentence.english}</p>
+            {phase === 'result' && isCorrect && (
+              <p className="sentence-turkish">{currentSentence.turkish}</p>
+            )}
+          </div>
+
+          {/* Phase Content */}
+          {phase === 'ready' && (
+            <div className="speech-action">
+              <p className="speech-hint">Cümleyi dinle ve ardından tekrarla!</p>
+              <button className="btn btn-primary speech-start-btn" onClick={startPractice}>
+                ▶️ Başla
+              </button>
+            </div>
+          )}
+
+          {phase === 'countdown' && (
+            <div className="speech-countdown">
+              <div className="countdown-number">{countdown}</div>
+              <p>Hazırlan...</p>
+            </div>
+          )}
+
+          {phase === 'listening' && (
+            <div className="speech-listening">
+              <div className="mic-indicator">
+                <div className="mic-pulse"></div>
+                🎤
+              </div>
+              <p className="listening-text">Dinleniyor...</p>
+              {spokenText && (
+                <p className="spoken-text">"{spokenText}"</p>
+              )}
+            </div>
+          )}
+
+          {phase === 'result' && (
+            <div className={`speech-result ${isCorrect ? 'correct' : 'wrong'}`}>
+              <div className="result-icon">
+                {isCorrect ? '✅' : '❌'}
+              </div>
+              <h3>{isCorrect ? 'Doğru!' : 'Tekrar Dene!'}</h3>
+              {spokenText && (
+                <p className="your-answer">Sen: "{spokenText}"</p>
+              )}
+              <div className="result-actions">
+                {!isCorrect && (
+                  <button className="btn btn-wrong" onClick={handleRetry}>🔄 Tekrar</button>
+                )}
+                <button className="btn btn-correct" onClick={handleNext}>
+                  {currentIndex + 1 < sentences.length ? 'Sonraki →' : 'Bitir'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -461,7 +775,7 @@ function AddChunkModal({ groupId, onClose, onSuccess }: { groupId: string; onClo
   );
 }
 
-function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, cardElapsed, formatTime }: {
+function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, cardElapsed, formatTime, ttsSpeed = 0.85, ttsVoice = 'en-US' }: {
   chunk: Chunk;
   isFlipped: boolean;
   onSingleClick: () => void;
@@ -469,12 +783,14 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
   onEdit: () => void;
   cardElapsed: number;
   formatTime: (seconds: number) => string;
+  ttsSpeed?: number;
+  ttsVoice?: string;
 }) {
   const [lastClickTime, setLastClickTime] = useState(0);
 
   const handleClick = (e: React.MouseEvent) => {
     // Don't trigger if clicking edit or speaker buttons
-    if ((e.target as HTMLElement).closest('.edit-chunk-btn, .tts-btn-small')) {
+    if ((e.target as HTMLElement).closest('.edit-chunk-btn, .tts-btn-small, .tts-all-btn')) {
       return;
     }
 
@@ -496,6 +812,11 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
     }
   };
 
+  const handleReadAll = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await speakSequence([chunk.english, ...chunk.examples], ttsSpeed, ttsVoice);
+  };
+
   return (
     <div className={`flash-card-container ${isFlipped ? 'flipped' : ''}`} onClick={handleClick}>
       <div className="flash-card">
@@ -506,7 +827,7 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
             <h2 className="chunk-english">{chunk.english}</h2>
             <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
           </div>
-          <button className="tts-btn-small" onClick={(e) => { e.stopPropagation(); speak(chunk.english); }}>🔊</button>
+          <button className="tts-btn-small" onClick={(e) => { e.stopPropagation(); speak(chunk.english, ttsSpeed, ttsVoice); }}>🔊</button>
         </div>
         <div className="card-face card-back">
           <div className="back-content">
@@ -514,7 +835,7 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
             <div className="examples-list-back">
               {chunk.examples.map((example, idx) => (
                 <div key={idx} className="example-item-wrapper">
-                  <p className="example-item-back" onClick={(e) => { e.stopPropagation(); speak(example); }}>
+                  <p className="example-item-back" onClick={(e) => { e.stopPropagation(); speak(example, ttsSpeed, ttsVoice); }}>
                     {example}
                   </p>
                   {chunk.exampleTranslations && chunk.exampleTranslations[idx] && (
@@ -523,6 +844,7 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
                 </div>
               ))}
             </div>
+            <button className="tts-all-btn" onClick={handleReadAll}>📢 Tümünü Oku</button>
           </div>
         </div>
       </div>
@@ -551,6 +873,15 @@ function App() {
   const [showChunkModal, setShowChunkModal] = useState(false);
   const [showEditChunkModal, setShowEditChunkModal] = useState<Chunk | null>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+
+  // New Feature States
+  const [streakInfo, setStreakInfo] = useState<StreakInfo>({ currentStreak: 0, longestStreak: 0, todayCount: 0, dailyGoal: 20, goalReached: false });
+  const [settings, setSettings] = useState<Settings>({ dailyGoal: 20, ttsSpeed: 0.85, ttsVoice: 'en-US' });
+  const [focusMode, setFocusMode] = useState<FocusMode>('all');
+  const [confidence, setConfidence] = useState<Record<number, ConfidenceData>>({});
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showSpeechPractice, setShowSpeechPractice] = useState(false);
 
   const fetchGroups = async () => {
     try {
@@ -648,14 +979,92 @@ function App() {
     }
   };
 
+  // Fetch settings
+  const fetchSettings = async () => {
+    try {
+      const res = await fetch('/api/settings');
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(data);
+      }
+    } catch (err) {
+      console.error('Failed to load settings:', err);
+    }
+  };
+
+  // Fetch streak info
+  const fetchStreak = async () => {
+    try {
+      const res = await fetch('/api/streak');
+      if (res.ok) {
+        const data = await res.json();
+        const wasNotReached = !streakInfo.goalReached;
+        setStreakInfo(data);
+        // Show confetti when goal just reached
+        if (data.goalReached && wasNotReached) {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 3000);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load streak:', err);
+    }
+  };
+
+  // Fetch confidence data for a group
+  const fetchConfidence = async (groupId: string) => {
+    try {
+      const res = await fetch(`/api/confidence/${groupId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setConfidence(data);
+      }
+    } catch (err) {
+      console.error('Failed to load confidence:', err);
+    }
+  };
+
+  // Update confidence after answer
+  const updateConfidence = async (chunkId: number, isCorrect: boolean) => {
+    try {
+      await fetch('/api/confidence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ groupId: selectedGroupId, chunkId, isCorrect }),
+      });
+    } catch (err) {
+      console.error('Failed to update confidence:', err);
+    }
+  };
+
+  // Save settings
+  const saveSettings = async (newSettings: Partial<Settings>) => {
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setSettings(data);
+      }
+    } catch (err) {
+      console.error('Failed to save settings:', err);
+    }
+  };
+
   useEffect(() => {
     fetchGroups();
+    fetchSettings();
+    fetchStreak();
     window.speechSynthesis.getVoices();
   }, []);
 
   useEffect(() => {
     if (selectedGroupId && groups.length > 0) {
       fetchChunks(selectedGroupId);
+      fetchConfidence(selectedGroupId);
     }
   }, [selectedGroupId, fetchChunks, groups]);
 
@@ -678,12 +1087,20 @@ function App() {
     const currentChunkId = sessionChunks[currentIndex].id;
     saveProgress(selectedGroupId, currentChunkId, status);
 
+    // Update confidence for spaced repetition
+    if (status === 'correct' || status === 'wrong') {
+      updateConfidence(currentChunkId, status === 'correct');
+    }
+
     // Record stats
     if (status === 'correct') {
       saveStats(1, 0);
     } else if (status === 'wrong') {
       saveStats(0, 1);
     }
+
+    // Refresh streak after each answer
+    fetchStreak();
 
     if (currentIndex + 1 < sessionChunks.length) {
       setCurrentIndex(currentIndex + 1);
@@ -725,20 +1142,50 @@ function App() {
   const wrongCount = progress.filter(p => p.status === 'wrong').length;
   const skippedCount = progress.filter(p => p.status === 'skipped').length;
 
+  // Get sentences for speech practice - collect all examples from current group
+  const speechSentences = useMemo(() => {
+    const sentences: PracticeSentence[] = [];
+    sessionChunks.forEach(chunk => {
+      chunk.examples.forEach((example, idx) => {
+        sentences.push({
+          english: example,
+          turkish: chunk.exampleTranslations?.[idx] || chunk.turkish
+        });
+      });
+    });
+    // Shuffle and limit to 10 sentences
+    return sentences.sort(() => Math.random() - 0.5).slice(0, 10);
+  }, [sessionChunks]);
+
   return (
     <div className="container">
+      {/* Confetti Animation */}
+      {showConfetti && (
+        <div className="confetti-container">
+          {[...Array(50)].map((_, i) => (
+            <div key={i} className="confetti" style={{ left: `${Math.random() * 100}%`, animationDelay: `${Math.random() * 2}s` }} />
+          ))}
+        </div>
+      )}
+
       <nav className="top-nav-modern">
         <div className="nav-left">
           <h1 className="logo-text-nav" onClick={() => window.location.reload()}>Chunk <span className="accent">Radar</span></h1>
           <div className="timer-display">⏱️ Oturum: {formatTime(sessionElapsed)}</div>
+          <div className="streak-display">
+            🔥 {streakInfo.currentStreak} gün
+            <span className="streak-progress">({streakInfo.todayCount}/{streakInfo.dailyGoal})</span>
+          </div>
         </div>
 
         <div className="nav-right">
+          <button className="nav-btn speech-practice-btn" onClick={() => setShowSpeechPractice(true)}>🎤 Pratik</button>
+          <button className="nav-btn settings" onClick={() => setShowSettingsModal(true)}>⚙️</button>
           <button className="nav-btn stats" onClick={() => setShowStatsModal(true)}>📈 İst.</button>
           <button className="nav-btn secondary" onClick={() => setShowChunkModal(true)}>+ Chunk</button>
           <button className="nav-btn secondary" onClick={() => setShowGroupModal(true)}>+ Grup</button>
           {selectedGroup && (
-            <button className="nav-btn secondary" onClick={() => setShowEditGroupModal(true)}>⚙ Düzenle</button>
+            <button className="nav-btn secondary" onClick={() => setShowEditGroupModal(true)}>✏️ Düzenle</button>
           )}
         </div>
       </nav>
@@ -758,20 +1205,32 @@ function App() {
         </div>
       </div>
 
+      {/* Focus Mode Buttons */}
+      <div className="focus-mode-container">
+        <span className="focus-label">Odak:</span>
+        <button className={`focus-btn ${focusMode === 'all' ? 'active' : ''}`} onClick={() => setFocusMode('all')}>Tümü</button>
+        <button className={`focus-btn ${focusMode === 'wrong' ? 'active' : ''}`} onClick={() => setFocusMode('wrong')}>❌ Yanlışlar</button>
+        <button className={`focus-btn ${focusMode === 'skipped' ? 'active' : ''}`} onClick={() => setFocusMode('skipped')}>❓ Bilinmeyenler</button>
+        <button className={`focus-btn ${focusMode === 'review' ? 'active' : ''}`} onClick={() => setFocusMode('review')}>🔄 Tekrar</button>
+      </div>
+
       {/* Mini Cards Navigation */}
       {sessionChunks.length > 0 && !isFinished && (
         <>
           <div className="mini-cards-nav">
-            {sessionChunks.map((chunk, idx) => (
-              <div
-                key={chunk.id}
-                className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
-                onClick={() => jumpToCard(idx)}
-                title={`Chunk ${idx + 1}: ${chunk.english}`}
-              >
-                {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
-              </div>
-            ))}
+            {sessionChunks.map((chunk, idx) => {
+              const conf = confidence[chunk.id];
+              return (
+                <div
+                  key={chunk.id}
+                  className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
+                  onClick={() => jumpToCard(idx)}
+                  title={`Chunk ${idx + 1}: ${chunk.english}${conf ? ` (Güven: ${conf.level}/5)` : ''}`}
+                >
+                  {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
+                </div>
+              );
+            })}
           </div>
           <div className="reset-container">
             <button className="reset-btn" onClick={() => resetProgress(selectedGroupId)}>🔄 İlerlemeyi Sıfırla</button>
@@ -786,11 +1245,13 @@ function App() {
               <FlashCard
                 chunk={currentChunk}
                 isFlipped={isFlipped}
-                onSingleClick={() => speak(currentChunk.english)}
+                onSingleClick={() => speak(currentChunk.english, settings.ttsSpeed, settings.ttsVoice)}
                 onDoubleClick={() => setIsFlipped(!isFlipped)}
                 onEdit={() => setShowEditChunkModal(currentChunk)}
                 cardElapsed={cardElapsed}
                 formatTime={formatTime}
+                ttsSpeed={settings.ttsSpeed}
+                ttsVoice={settings.ttsVoice}
               />
               {isFlipped && (
                 <div className="controls">
@@ -845,328 +1306,96 @@ function App() {
       {showEditChunkModal && selectedGroupId && <EditChunkModal groupId={selectedGroupId} chunk={showEditChunkModal} onClose={() => setShowEditChunkModal(null)} onSuccess={() => fetchChunks(selectedGroupId)} />}
       {showStatsModal && <StatisticsDashboard onClose={() => setShowStatsModal(false)} />}
 
-      <style>{`
-        /* Modern Navigation */
-        .top-nav-modern {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1.5rem;
-          padding: 1rem 0;
-        }
+      {/* Speech Practice Modal */}
+      {showSpeechPractice && speechSentences.length > 0 && (
+        <SpeechPracticeModal
+          sentences={speechSentences}
+          onClose={() => setShowSpeechPractice(false)}
+          ttsSpeed={settings.ttsSpeed}
+          ttsVoice={settings.ttsVoice}
+        />
+      )}
 
-        .nav-left, .nav-right { display: flex; align-items: center; gap: 0.8rem; }
-        .logo-text-nav { font-size: 1.8rem; font-weight: 800; cursor: pointer; }
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h2>⚙️ Ayarlar</h2>
+              <button className="close-btn" onClick={() => setShowSettingsModal(false)}>&times;</button>
+            </div>
+            <div className="settings-form">
+              <div className="setting-group">
+                <label>🎯 Günlük Hedef (Chunk)</label>
+                <div className="setting-input-group">
+                  <input
+                    type="number"
+                    min="5"
+                    max="100"
+                    value={settings.dailyGoal}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 20;
+                      setSettings(s => ({ ...s, dailyGoal: val }));
+                    }}
+                  />
+                  <button className="btn btn-small" onClick={() => saveSettings({ dailyGoal: settings.dailyGoal })}>Kaydet</button>
+                </div>
+              </div>
 
-        .nav-btn {
-          padding: 0.6rem 1.2rem;
-          border-radius: 12px;
-          cursor: pointer;
-          font-weight: 600;
-          border: 1px solid var(--glass-border);
-          transition: all 0.2s;
-          font-family: 'Outfit', sans-serif;
-          font-size: 0.9rem;
-        }
-        .nav-btn.primary { background: var(--accent-primary); color: white; border: none; }
-        .nav-btn.secondary { background: var(--glass); color: white; }
-        .nav-btn.stats { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; }
-        .nav-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+              <div className="setting-group">
+                <label>🔊 Konuşma Hızı</label>
+                <div className="speed-buttons">
+                  {[
+                    { value: 0.6, label: 'Yavaş' },
+                    { value: 0.85, label: 'Normal' },
+                    { value: 1.0, label: 'Hızlı' }
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`speed-btn ${settings.ttsSpeed === opt.value ? 'active' : ''}`}
+                      onClick={() => { setSettings(s => ({ ...s, ttsSpeed: opt.value })); saveSettings({ ttsSpeed: opt.value }); }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        /* Timer Display */
-        .timer-display {
-          background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          font-weight: 600;
-          color: var(--accent-secondary);
-          border: 1px solid rgba(139, 92, 246, 0.3);
-        }
+              <div className="setting-group">
+                <label>🌍 Aksan</label>
+                <div className="accent-buttons">
+                  {[
+                    { value: 'en-US', label: '🇺🇸 Amerikan' },
+                    { value: 'en-GB', label: '🇬🇧 İngiliz' }
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      className={`accent-btn ${settings.ttsVoice === opt.value ? 'active' : ''}`}
+                      onClick={() => { setSettings(s => ({ ...s, ttsVoice: opt.value })); saveSettings({ ttsVoice: opt.value }); }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        .card-timer {
-          position: absolute;
-          top: 1rem;
-          right: 4rem;
-          background: rgba(139, 92, 246, 0.15);
-          padding: 0.4rem 0.8rem;
-          border-radius: 12px;
-          font-size: 0.8rem;
-          font-weight: 600;
-          color: var(--accent-secondary);
-          border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-
-        /* Reset Button */
-        .reset-container {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 1.5rem;
-        }
-
-        .reset-btn {
-          background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(249, 115, 22, 0.15));
-          border: 1px solid rgba(239, 68, 68, 0.3);
-          color: #f97316;
-          padding: 0.6rem 1.2rem;
-          border-radius: 12px;
-          cursor: pointer;
-          font-weight: 600;
-          transition: all 0.2s;
-          font-family: 'Outfit', sans-serif;
-          font-size: 0.85rem;
-        }
-
-        .reset-btn:hover {
-          background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(249, 115, 22, 0.25));
-          transform: translateY(-1px);
-        }
-
-        /* Modal Large */
-        .modal-large { max-width: 600px; }
-
-        /* Examples Section in Modal */
-        .examples-section {
-          display: flex;
-          flex-direction: column;
-          gap: 0.8rem;
-        }
-
-        .section-label {
-          color: var(--text-muted);
-          font-size: 0.85rem;
-          margin-bottom: 0.3rem;
-        }
-
-        .example-row {
-          display: flex;
-          flex-direction: column;
-          gap: 0.4rem;
-        }
-
-        .translation-input {
-          background: rgba(139, 92, 246, 0.1) !important;
-          border-color: rgba(139, 92, 246, 0.3) !important;
-          font-size: 0.9rem !important;
-        }
-
-        /* Example Translation Display */
-        .example-item-wrapper {
-          display: flex;
-          flex-direction: column;
-          gap: 0.3rem;
-        }
-
-        .example-translation {
-          color: rgba(139, 92, 246, 0.6);
-          font-size: 0.8rem;
-          margin: 0;
-          padding-left: 1rem;
-          font-style: italic;
-          opacity: 0.8;
-        }
-
-        /* Group Tabs */
-        .group-tabs-container {
-          margin-bottom: 2rem;
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-
-        .group-tabs {
-          display: flex;
-          gap: 0.8rem;
-          padding: 0.5rem 0;
-          min-width: min-content;
-        }
-
-        .group-tab {
-          padding: 0.8rem 1.8rem;
-          border-radius: 50px;
-          background: var(--glass);
-          color: var(--text-muted);
-          border: 1px solid var(--glass-border);
-          cursor: pointer;
-          font-weight: 600;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          white-space: nowrap;
-          font-family: 'Outfit', sans-serif;
-        }
-
-        .group-tab:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: white;
-        }
-
-        .group-tab.active {
-          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-          color: white;
-          border-color: transparent;
-          box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-
-        /* Mini Cards Navigation */
-        .mini-cards-nav {
-          display: flex;
-          gap: 0.5rem;
-          margin-bottom: 2rem;
-          padding: 1rem;
-          background: var(--bg-card);
-          border-radius: 16px;
-          border: 1px solid var(--glass-border);
-          flex-wrap: wrap;
-          justify-content: center;
-          max-width: 800px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-
-        .mini-card {
-          width: 36px;
-          height: 36px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.75rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: all 0.2s;
-          border: 2px solid transparent;
-        }
-
-        .mini-card:hover {
-          transform: scale(1.1);
-        }
-
-        .mini-card.active {
-          border-color: white;
-          box-shadow: 0 0 0 2px var(--bg-deep);
-        }
-
-        .mini-card.status-unreviewed {
-          background: rgba(255, 255, 255, 0.15);
-          color: rgba(255, 255, 255, 0.5);
-        }
-
-        .mini-card.status-correct {
-          background: #22c55e;
-          color: white;
-        }
-
-        .mini-card.status-wrong {
-          background: #ef4444;
-          color: white;
-        }
-
-        .mini-card.status-skipped {
-          background: #3b82f6;
-          color: white;
-        }
-
-        /* Updated Controls */
-        .controls {
-          display: flex;
-          gap: 1rem;
-          width: 100%;
-          max-width: 600px;
-        }
-
-        .btn-skipped {
-          background: rgba(59, 130, 246, 0.15);
-          color: #3b82f6;
-          border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-skipped:hover {
-          background: #3b82f6;
-          color: white;
-        }
-
-        /* Stats */
-        .text-skipped { color: #3b82f6; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-
-        /* Modal Styles */
-        .modal-overlay {
-          position: fixed;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0, 0, 0, 0.85);
-          backdrop-filter: blur(12px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-
-        .modal-content {
-          background: var(--bg-card);
-          padding: 2.5rem;
-          border-radius: 28px;
-          width: 90%;
-          max-width: 500px;
-          border: 1px solid var(--glass-border);
-          box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-        }
-
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-        .close-btn { background: transparent; border: none; font-size: 2rem; color: var(--text-muted); cursor: pointer; }
-
-        .modal-content h2 { font-size: 1.8rem; }
-        .modal-form { display: flex; flex-direction: column; gap: 1rem; }
-        .modal-form input { background: var(--bg-deep); border: 1px solid var(--glass-border); padding: 1rem; border-radius: 14px; color: white; font-size: 1rem; }
-        .modal-actions { display: flex; gap: 1rem; margin-top: 1rem; align-items: center; }
-
-        /* Stats Styles */
-        .stats-modal { max-width: 600px; }
-        .stats-svg { width: 100%; height: auto; margin: 1.5rem 0; overflow: visible; }
-        .chart-point:hover circle { r: 6; cursor: pointer; }
-        .stats-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
-        .summary-card { background: var(--bg-deep); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 0.5rem; text-align: center; }
-        .summary-label { color: var(--text-muted); font-size: 0.85rem; }
-        .summary-value { font-size: 2rem; font-weight: 800; }
-
-        /* Edit Styles */
-        .edit-chunk-btn { position: absolute; top: 1rem; left: 1rem; background: var(--glass); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; z-index: 10; }
-        .card-front:hover .edit-chunk-btn { opacity: 1; }
-        .edit-chunk-btn:hover { background: var(--accent-primary); color: white; }
-
-        /* Game Styles */
-        .accent { background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .game-area { display: flex; flex-direction: column; align-items: center; gap: 2rem; perspective: 1000px; padding-bottom: 4rem;}
-        .flash-card-container { width: 100%; max-width: 500px; height: 380px; cursor: pointer; }
-        .flash-card { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
-        .flash-card-container.flipped .flash-card { transform: rotateY(180deg); }
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 28px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2.5rem; background: var(--bg-card); border: 1px solid var(--glass-border); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); }
-        .card-front { background: linear-gradient(135deg, #1c1c24 0%, #121216 100%); }
-        .card-back { background: linear-gradient(135deg, #1e1b4b 0%, #121216 100%); transform: rotateY(180deg); }
-        .chunk-english { font-size: 2.5rem; text-align: center; margin-bottom: 1rem; font-family: 'Outfit', sans-serif; font-weight: 700; }
-        .tap-hint { color: var(--text-muted); font-size: 0.9rem; opacity: 0.6; }
-        .chunk-info { text-align: center; }
-        .back-content { width: 100%; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
-        .chunk-turkish-back { color: var(--accent-secondary); font-size: 1.8rem; font-weight: 700; text-align: center; }
-        .examples-list-back { width: 100%; display: flex; flex-direction: column; gap: 0.8rem; }
-        .example-item-back { background: var(--glass); padding: 14px 18px; border-radius: 16px; font-size: 1rem; color: var(--text-muted); transition: all 0.2s; border: 1px solid var(--glass-border); cursor: pointer; }
-        .example-item-back:hover { color: var(--text-main); background: rgba(255, 255, 255, 0.08); transform: translateX(5px); }
-        .tts-btn-small { position: absolute; bottom: 1.5rem; right: 1.5rem; background: var(--glass); border: none; color: white; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; font-size: 1.4rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 10; }
-        .tts-btn-small:hover { background: var(--accent-primary); transform: scale(1.1); }
-        .btn { flex: 1; padding: 1.2rem; border-radius: 20px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; border: none; font-family: 'Outfit', sans-serif; }
-        .btn-wrong { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .btn-wrong:hover { background: #ef4444; color: white; }
-        .btn-correct { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .btn-correct:hover { background: #22c55e; color: white; }
-        .finish-card { background: var(--bg-card); padding: 3.5rem; border-radius: 36px; text-align: center; width: 100%; max-width: 560px; border: 1px solid var(--glass-border); }
-        .finish-title { font-size: 2.2rem; margin-bottom: 2rem; }
-        .stat-item { display: flex; flex-direction: column; gap: 0.5rem; }
-        .stat-label { color: var(--text-muted); font-size: 0.9rem; }
-        .stat-value { font-size: 2.5rem; font-weight: 800; }
-        .text-correct { color: #22c55e; }
-        .text-wrong { color: #ef4444; }
-        .btn-primary { background: var(--accent-primary); color: white; }
-        .btn-secondary { background: var(--glass); color: var(--text-main); border: 1px solid var(--glass-border); }
-        .finish-actions { margin-top: 2rem; display: flex; justify-content: center; }
-        .empty-state { text-align: center; margin-top: 4rem; color: var(--text-muted); }
-      `}</style>
+              <div className="setting-group">
+                <label>🔥 Streak Bilgisi</label>
+                <div className="streak-info-card">
+                  <div className="streak-stat">
+                    <span>Mevcut Streak</span>
+                    <strong>{streakInfo.currentStreak} gün</strong>
+                  </div>
+                  <div className="streak-stat">
+                    <span>En Uzun Streak</span>
+                    <strong>{streakInfo.longestStreak} gün</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

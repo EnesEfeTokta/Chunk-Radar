@@ -1,0 +1,752 @@
+[
+    {
+        "id": 1,
+        "english": "Work on",
+        "turkish": "Üzerinde çalışmak",
+        "examples": [
+            "I am working on the login page.",
+            "We are working on a new feature.",
+            "Who is working on this bug?"
+        ],
+        "exampleTranslations": [
+            "Giriş sayfası üzerinde çalışıyorum.",
+            "Yeni bir özellik üzerinde çalışıyoruz.",
+            "Bu hata üzerinde kim çalışıyor?"
+        ]
+    },
+    {
+        "id": 2,
+        "english": "Figure out",
+        "turkish": "Çözmek, anlamak",
+        "examples": [
+            "I can't figure out why the code fails.",
+            "We need to figure out a solution.",
+            "Did you figure out the problem?"
+        ],
+        "exampleTranslations": [
+            "Kodun neden başarısız olduğunu çözemiyorum.",
+            "Bir çözüm bulmamız (anlamamız) gerekiyor.",
+            "Problemi çözdün mü?"
+        ]
+    },
+    {
+        "id": 3,
+        "english": "Fix a bug",
+        "turkish": "Hata düzeltmek",
+        "examples": [
+            "I fixed a critical bug yesterday.",
+            "It took two hours to fix the bug.",
+            "Please fix this bug before deployment."
+        ],
+        "exampleTranslations": [
+            "Dün kritik bir hatayı düzelttim.",
+            "Hatayı düzeltmek iki saat sürdü.",
+            "Lütfen dağıtımdan önce bu hatayı düzelt."
+        ]
+    },
+    {
+        "id": 4,
+        "english": "Make sure",
+        "turkish": "Emin olmak",
+        "examples": [
+            "Make sure the database is running.",
+            "Please make sure you save your changes.",
+            "I want to make sure the code is clean."
+        ],
+        "exampleTranslations": [
+            "Veritabanının çalıştığından emin ol.",
+            "Lütfen değişikliklerini kaydettiğinden emin ol.",
+            "Kodun temiz olduğundan emin olmak istiyorum."
+        ]
+    },
+    {
+        "id": 5,
+        "english": "Set up",
+        "turkish": "Kurmak, ayarlamak",
+        "examples": [
+            "I need to set up the development environment.",
+            "Can you help me set up the server?",
+            "The project is easy to set up."
+        ],
+        "exampleTranslations": [
+            "Geliştirme ortamını kurmam gerekiyor.",
+            "Sunucuyu ayarlamama yardım eder misin?",
+            "Projenin kurulumu kolaydır."
+        ]
+    },
+    {
+        "id": 6,
+        "english": "Go live",
+        "turkish": "Yayına girmek, canlıya geçmek",
+        "examples": [
+            "When will the website go live?",
+            "We are planning to go live on Friday.",
+            "The application went live last night."
+        ],
+        "exampleTranslations": [
+            "Web sitesi ne zaman yayına girecek?",
+            "Cuma günü yayına girmeyi planlıyoruz.",
+            "Uygulama dün gece yayına girdi."
+        ]
+    },
+    {
+        "id": 7,
+        "english": "Look into",
+        "turkish": "İncelemek, araştırmak",
+        "examples": [
+            "I will look into this issue.",
+            "Can you look into the error logs?",
+            "My manager is looking into the requirements."
+        ],
+        "exampleTranslations": [
+            "Bu meseleyi inceleyeceğim.",
+            "Hata kayıtlarını inceleyebilir misin?",
+            "Yöneticim gereksinimleri araştırıyor."
+        ]
+    },
+    {
+        "id": 8,
+        "english": "Run the code",
+        "turkish": "Kodu çalıştırmak",
+        "examples": [
+            "Did you run the code locally?",
+            "I cannot run the code on my machine.",
+            "Wait until the code runs completely."
+        ],
+        "exampleTranslations": [
+            "Kodu yerel (local) ortamda çalıştırdın mı?",
+            "Kodu kendi makinemde çalıştıramıyorum.",
+            "Kod tamamen çalışana kadar bekle."
+        ]
+    },
+    {
+        "id": 9,
+        "english": "Comment out",
+        "turkish": "Yorum satırı yapmak (etkisiz hale getirmek)",
+        "examples": [
+            "I commented out the old function.",
+            "Don't delete it, just comment it out.",
+            "Why is this line commented out?"
+        ],
+        "exampleTranslations": [
+            "Eski fonksiyonu yoruma aldım.",
+            "Onu silme, sadece yoruma al.",
+            "Bu satır neden yoruma alınmış?"
+        ]
+    },
+    {
+        "id": 10,
+        "english": "Depend on",
+        "turkish": "Bağlı olmak, güvenmek",
+        "examples": [
+            "This module depends on a library.",
+            "The result depends on the user input.",
+            "You can depend on this API."
+        ],
+        "exampleTranslations": [
+            "Bu modül bir kütüphaneye bağlıdır.",
+            "Sonuç kullanıcı girdisine bağlıdır.",
+            "Bu API'ye güvenebilirsin."
+        ]
+    },
+    {
+        "id": 11,
+        "english": "In progress",
+        "turkish": "Devam etmekte, yapım aşamasında",
+        "examples": [
+            "The task is currently in progress.",
+            "Is the deployment still in progress?",
+            "Maintenance is in progress."
+        ],
+        "exampleTranslations": [
+            "Görev şu anda yapım aşamasında.",
+            "Dağıtım (deployment) hala devam ediyor mu?",
+            "Bakım devam ediyor."
+        ]
+    },
+    {
+        "id": 12,
+        "english": "Deal with",
+        "turkish": "Uğraşmak, başa çıkmak",
+        "examples": [
+            "Backend handles data, frontend deals with UI.",
+            "I don't want to deal with server issues.",
+            "How do you deal with merge conflicts?"
+        ],
+        "exampleTranslations": [
+            "Backend veriyi yönetir, frontend arayüzle uğraşır.",
+            "Sunucu sorunlarıyla uğraşmak istemiyorum.",
+            "Birleştirme (merge) çakışmalarıyla nasıl başa çıkıyorsun?"
+        ]
+    },
+    {
+        "id": 13,
+        "english": "From scratch",
+        "turkish": "Sıfırdan, en baştan",
+        "examples": [
+            "I built this app from scratch.",
+            "We don't need to write it from scratch.",
+            "Start the project from scratch."
+        ],
+        "exampleTranslations": [
+            "Bu uygulamayı sıfırdan yaptım.",
+            "Bunu sıfırdan yazmamıza gerek yok.",
+            "Projeye sıfırdan başla."
+        ]
+    },
+    {
+        "id": 14,
+        "english": "Up to date",
+        "turkish": "Güncel",
+        "examples": [
+            "Keep your software up to date.",
+            "Is the documentation up to date?",
+            "This library is not up to date."
+        ],
+        "exampleTranslations": [
+            "Yazılımını güncel tut.",
+            "Dokümantasyon güncel mi?",
+            "Bu kütüphane güncel değil."
+        ]
+    },
+    {
+        "id": 15,
+        "english": "Out of date",
+        "turkish": "Eskimiş, güncel olmayan",
+        "examples": [
+            "The tutorial is out of date.",
+            "Don't use out of date packages.",
+            "This method is deprecated and out of date."
+        ],
+        "exampleTranslations": [
+            "Eğitim (tutorial) eskimiş.",
+            "Eskimiş paketleri kullanma.",
+            "Bu metod kullanımdan kaldırıldı ve eskidi."
+        ]
+    },
+    {
+        "id": 16,
+        "english": "Push changes",
+        "turkish": "Değişiklikleri göndermek (Git)",
+        "examples": [
+            "Don't forget to push your changes.",
+            "I pushed the changes to the master branch.",
+            "Did you push the changes?"
+        ],
+        "exampleTranslations": [
+            "Değişikliklerini göndermeyi unutma.",
+            "Değişiklikleri master dalına gönderdim.",
+            "Değişiklikleri gönderdin mi?"
+        ]
+    },
+    {
+        "id": 17,
+        "english": "Take a look",
+        "turkish": "Göz atmak",
+        "examples": [
+            "Can you take a look at my code?",
+            "I will take a look later.",
+            "Let's take a look at the requirements."
+        ],
+        "exampleTranslations": [
+            "Koduma bir göz atabilir misin?",
+            "Daha sonra bir göz atacağım.",
+            "Hadi gereksinimlere bir göz atalım."
+        ]
+    },
+    {
+        "id": 18,
+        "english": "Break down",
+        "turkish": "Parçalara ayırmak, bozulmak",
+        "examples": [
+            "Let's break down the task into smaller parts.",
+            "The system broke down yesterday.",
+            "We need to break down the problem."
+        ],
+        "exampleTranslations": [
+            "Hadi görevi daha küçük parçalara ayıralım.",
+            "Sistem dün bozuldu.",
+            "Sorunu parçalara ayırmamız gerek."
+        ]
+    },
+    {
+        "id": 19,
+        "english": "Log in / Log out",
+        "turkish": "Giriş yapmak / Çıkış yapmak",
+        "examples": [
+            "The user cannot log in.",
+            "Don't forget to log out.",
+            "I logged in as admin."
+        ],
+        "exampleTranslations": [
+            "Kullanıcı giriş yapamıyor.",
+            "Çıkış yapmayı unutma.",
+            "Yönetici olarak giriş yaptım."
+        ]
+    },
+    {
+        "id": 20,
+        "english": "Sign up",
+        "turkish": "Kaydolmak",
+        "examples": [
+            "Users need to sign up first.",
+            "The sign up button is not working.",
+            "I signed up for the newsletter."
+        ],
+        "exampleTranslations": [
+            "Kullanıcıların önce kaydolması gerekir.",
+            "Kayıt ol butonu çalışmıyor.",
+            "Bültene kaydoldum."
+        ]
+    },
+    {
+        "id": 21,
+        "english": "Get stuck",
+        "turkish": "Takılıp kalmak",
+        "examples": [
+            "I got stuck on this error.",
+            "If you get stuck, ask for help.",
+            "The process got stuck at 99%."
+        ],
+        "exampleTranslations": [
+            "Bu hatada takılıp kaldım.",
+            "Eğer takılırsan yardım iste.",
+            "İşlem %99'da takılı kaldı."
+        ]
+    },
+    {
+        "id": 22,
+        "english": "Throw an exception",
+        "turkish": "Hata fırlatmak",
+        "examples": [
+            "The method throws an exception if value is null.",
+            "Why did the code throw an exception?",
+            "Don't throw an exception, handle it."
+        ],
+        "exampleTranslations": [
+            "Değer boşsa metod hata fırlatır.",
+            "Kod neden hata fırlattı?",
+            "Hata fırlatma, onu ele al (yönet)."
+        ]
+    },
+    {
+        "id": 23,
+        "english": "As soon as possible",
+        "turkish": "Mümkün olan en kısa sürede",
+        "examples": [
+            "Fix this as soon as possible.",
+            "Please reply as soon as possible.",
+            "We need the data as soon as possible."
+        ],
+        "exampleTranslations": [
+            "Bunu mümkün olan en kısa sürede düzelt.",
+            "Lütfen en kısa sürede cevap ver.",
+            "Veriye en kısa sürede ihtiyacımız var."
+        ]
+    },
+    {
+        "id": 24,
+        "english": "In charge of",
+        "turkish": "Sorumlu olmak",
+        "examples": [
+            "Who is in charge of the database?",
+            "I am in charge of the frontend team.",
+            "She is in charge of testing."
+        ],
+        "exampleTranslations": [
+            "Veritabanından kim sorumlu?",
+            "Frontend ekibinden ben sorumluyum.",
+            "Test işlemlerinden o sorumlu."
+        ]
+    },
+    {
+        "id": 25,
+        "english": "Roll back",
+        "turkish": "Geri almak (sürümü/işlemi)",
+        "examples": [
+            "We had to roll back the update.",
+            "Can we roll back to the previous version?",
+            "The transaction rolled back automatically."
+        ],
+        "exampleTranslations": [
+            "Güncellemeyi geri almak zorunda kaldık.",
+            "Önceki sürüme geri dönebilir miyiz?",
+            "İşlem (transaction) otomatik olarak geri alındı."
+        ]
+    },
+    {
+        "id": 26,
+        "english": "Get rid of",
+        "turkish": "Kurtulmak",
+        "examples": [
+            "We need to get rid of this legacy code.",
+            "How can I get rid of this warning?",
+            "Let's get rid of unused variables."
+        ],
+        "exampleTranslations": [
+            "Bu eski (miras) koddan kurtulmamız gerek.",
+            "Bu uyarıdan nasıl kurtulabilirim?",
+            "Hadi kullanılmayan değişkenlerden kurtulalım."
+        ]
+    },
+    {
+        "id": 27,
+        "english": "Keep in mind",
+        "turkish": "Akılda tutmak, unutmamak",
+        "examples": [
+            "Keep in mind that the server is slow.",
+            "Please keep the deadline in mind.",
+            "You should keep security in mind."
+        ],
+        "exampleTranslations": [
+            "Sunucunun yavaş olduğunu aklında tut.",
+            "Lütfen teslim tarihini aklında tut.",
+            "Güvenliği aklında bulundurmalısın."
+        ]
+    },
+    {
+        "id": 28,
+        "english": "Let me know",
+        "turkish": "Bana haber ver/bildir",
+        "examples": [
+            "Let me know when you are done.",
+            "If you find a bug, let me know.",
+            "Please let me know if you need help."
+        ],
+        "exampleTranslations": [
+            "Bitirdiğinde bana haber ver.",
+            "Bir hata bulursan bana bildir.",
+            "Yardıma ihtiyacın olursa lütfen bana haber ver."
+        ]
+    },
+    {
+        "id": 29,
+        "english": "Turn on / Turn off",
+        "turkish": "Açmak / Kapatmak (Cihaz/Özellik)",
+        "examples": [
+            "Turn on the notifications.",
+            "Did you turn off the firewall?",
+            "Try turning it off and on again."
+        ],
+        "exampleTranslations": [
+            "Bildirimleri aç.",
+            "Güvenlik duvarını kapattın mı?",
+            "Kapatıp yeniden açmayı dene."
+        ]
+    },
+    {
+        "id": 30,
+        "english": "Shut down",
+        "turkish": "Kapatmak (Sistem/Sunucu)",
+        "examples": [
+            "The server is shutting down.",
+            "Don't shut down the computer yet.",
+            "The application shuts down unexpectedly."
+        ],
+        "exampleTranslations": [
+            "Sunucu kapanıyor.",
+            "Bilgisayarı henüz kapatma.",
+            "Uygulama beklenmedik bir şekilde kapanıyor."
+        ]
+    },
+    {
+        "id": 31,
+        "english": "Access denied",
+        "turkish": "Erişim reddedildi",
+        "examples": [
+            "I tried to login but access denied.",
+            "Why is access denied for this user?",
+            "You get an access denied error."
+        ],
+        "exampleTranslations": [
+            "Giriş yapmaya çalıştım ama erişim reddedildi.",
+            "Bu kullanıcı için erişim neden reddedildi?",
+            "Erişim reddedildi hatası alıyorsun."
+        ]
+    },
+    {
+        "id": 32,
+        "english": "Hard to read",
+        "turkish": "Okunması zor",
+        "examples": [
+            "This code is hard to read.",
+            "The font size makes it hard to read.",
+            "Spaghetti code is hard to read."
+        ],
+        "exampleTranslations": [
+            "Bu kodun okunması zor.",
+            "Yazı boyutu okunmasını zorlaştırıyor.",
+            "Spagetti kodun okunması zordur."
+        ]
+    },
+    {
+        "id": 33,
+        "english": "Based on",
+        "turkish": "Dayanarak, temel alarak",
+        "examples": [
+            "The solution is based on Java.",
+            "Based on the logs, there is a timeout.",
+            "We made a decision based on user feedback."
+        ],
+        "exampleTranslations": [
+            "Çözüm Java'ya dayanıyor.",
+            "Loglara dayanarak, bir zaman aşımı var.",
+            "Kullanıcı geri bildirimine dayanarak bir karar verdik."
+        ]
+    },
+    {
+        "id": 34,
+        "english": "Instead of",
+        "turkish": "Yerine",
+        "examples": [
+            "Use CSS grid instead of tables.",
+            "Can we use JSON instead of XML?",
+            "I used a loop instead of recursion."
+        ],
+        "exampleTranslations": [
+            "Tablolar yerine CSS grid kullan.",
+            "XML yerine JSON kullanabilir miyiz?",
+            "Özyineleme yerine döngü kullandım."
+        ]
+    },
+    {
+        "id": 35,
+        "english": "Due to",
+        "turkish": "Nedeniyle, yüzünden",
+        "examples": [
+            "The site is down due to maintenance.",
+            "It failed due to a network error.",
+            "Slow performance is due to memory leak."
+        ],
+        "exampleTranslations": [
+            "Site bakım nedeniyle kapalı.",
+            "Ağ hatası yüzünden başarısız oldu.",
+            "Yavaş performans bellek sızıntısı nedeniyledir."
+        ]
+    },
+    {
+        "id": 36,
+        "english": "In the meantime",
+        "turkish": "Bu sırada, bu arada",
+        "examples": [
+            "The tests are running, in the meantime I will drink coffee.",
+            "You can fix the UI, in the meantime I'll check the DB.",
+            "Please wait, in the meantime read the manual."
+        ],
+        "exampleTranslations": [
+            "Testler çalışıyor, bu sırada kahve içeceğim.",
+            "Sen arayüzü düzeltebilirsin, bu arada ben veritabanına bakacağım.",
+            "Lütfen bekle, bu arada kılavuzu oku."
+        ]
+    },
+    {
+        "id": 37,
+        "english": "Pay attention to",
+        "turkish": "Dikkat etmek, önem vermek",
+        "examples": [
+            "Pay attention to detail.",
+            "You should pay attention to compiler warnings.",
+            "Pay attention to variable names."
+        ],
+        "exampleTranslations": [
+            "Detaylara dikkat et.",
+            "Derleyici uyarılarına dikkat etmelisin.",
+            "Değişken isimlerine dikkat et."
+        ]
+    },
+    {
+        "id": 38,
+        "english": "Best practice",
+        "turkish": "En iyi uygulama (standart)",
+        "examples": [
+            "Using meaningful names is a best practice.",
+            "Follow the best practices for security.",
+            "Is this considered a best practice?"
+        ],
+        "exampleTranslations": [
+            "Anlamlı isimler kullanmak en iyi uygulamadır.",
+            "Güvenlik için en iyi uygulamaları takip et.",
+            "Bu, en iyi uygulama olarak kabul edilir mi?"
+        ]
+    },
+    {
+        "id": 39,
+        "english": "Open source",
+        "turkish": "Açık kaynak",
+        "examples": [
+            "Linux is an open source project.",
+            "I contribute to open source software.",
+            "Is this library open source?"
+        ],
+        "exampleTranslations": [
+            "Linux açık kaynaklı bir projedir.",
+            "Açık kaynaklı yazılımlara katkıda bulunuyorum.",
+            "Bu kütüphane açık kaynak mı?"
+        ]
+    },
+    {
+        "id": 40,
+        "english": "Under maintenance",
+        "turkish": "Bakım aşamasında",
+        "examples": [
+            "The server is currently under maintenance.",
+            "The website is under maintenance.",
+            "Is the system under maintenance?"
+        ],
+        "exampleTranslations": [
+            "Sunucu şu anda bakım aşamasında.",
+            "Web sitesi bakımda.",
+            "Sistem bakımda mı?"
+        ]
+    },
+    {
+        "id": 41,
+        "english": "Drag and drop",
+        "turkish": "Sürükle ve bırak",
+        "examples": [
+            "The interface supports drag and drop.",
+            "Just drag and drop the file here.",
+            "Drag and drop functionality is broken."
+        ],
+        "exampleTranslations": [
+            "Arayüz sürükle ve bırak özelliğini destekliyor.",
+            "Dosyayı buraya sürükleyip bırakman yeterli.",
+            "Sürükle bırak işlevi bozuk."
+        ]
+    },
+    {
+        "id": 42,
+        "english": "By the way",
+        "turkish": "Bu arada, aklıma gelmişken",
+        "examples": [
+            "By the way, did you commit the code?",
+            "The meeting is at 2 PM, by the way.",
+            "By the way, nice job on the project."
+        ],
+        "exampleTranslations": [
+            "Bu arada, kodu commit'ledin mi?",
+            "Bu arada, toplantı saat 2'de.",
+            "Bu arada, projede iyi iş çıkardın."
+        ]
+    },
+    {
+        "id": 43,
+        "english": "For example",
+        "turkish": "Örneğin",
+        "examples": [
+            "Use a strong typed language, for example C#.",
+            "There are many errors, for example null pointer.",
+            "You can use various databases, for example SQL or Mongo."
+        ],
+        "exampleTranslations": [
+            "Güçlü tipli bir dil kullan, örneğin C#.",
+            "Çok hata var, örneğin null pointer.",
+            "Çeşitli veritabanları kullanabilirsin, örneğin SQL veya Mongo."
+        ]
+    },
+    {
+        "id": 44,
+        "english": "Sort out",
+        "turkish": "Çözümlemek, ayıklamak",
+        "examples": [
+            "We need to sort out the permissions.",
+            "I will sort out the database issues.",
+            "Can you sort out this list?"
+        ],
+        "exampleTranslations": [
+            "İzinleri çözümlememiz gerekiyor.",
+            "Veritabanı sorunlarını halledeceğim.",
+            "Bu listeyi ayıklayabilir misin?"
+        ]
+    },
+    {
+        "id": 45,
+        "english": "User friendly",
+        "turkish": "Kullanıcı dostu",
+        "examples": [
+            "The app is very user friendly.",
+            "Make the UI more user friendly.",
+            "It is not user friendly at all."
+        ],
+        "exampleTranslations": [
+            "Uygulama çok kullanıcı dostu.",
+            "Arayüzü daha kullanıcı dostu yap.",
+            "Hiç kullanıcı dostu değil."
+        ]
+    },
+    {
+        "id": 46,
+        "english": "Compatible with",
+        "turkish": "İle uyumlu",
+        "examples": [
+            "This software is compatible with Windows 10.",
+            "Is the version compatible with the plugin?",
+            "It is not compatible with mobile devices."
+        ],
+        "exampleTranslations": [
+            "Bu yazılım Windows 10 ile uyumlu.",
+            "Sürüm eklenti ile uyumlu mu?",
+            "Mobil cihazlarla uyumlu değil."
+        ]
+    },
+    {
+        "id": 47,
+        "english": "Similar to",
+        "turkish": "Benzer",
+        "examples": [
+            "Java is similar to C#.",
+            "This bug is similar to the previous one.",
+            "The design looks similar to Twitter."
+        ],
+        "exampleTranslations": [
+            "Java, C#'a benzer.",
+            "Bu hata öncekine benziyor.",
+            "Tasarım Twitter'a benziyor."
+        ]
+    },
+    {
+        "id": 48,
+        "english": "Respond to",
+        "turkish": "Yanıt vermek",
+        "examples": [
+            "The server does not respond to requests.",
+            "Please respond to the email.",
+            "How does the app respond to errors?"
+        ],
+        "exampleTranslations": [
+            "Sunucu isteklere yanıt vermiyor.",
+            "Lütfen e-postaya yanıt ver.",
+            "Uygulama hatalara nasıl yanıt veriyor?"
+        ]
+    },
+    {
+        "id": 49,
+        "english": "Connect to",
+        "turkish": "Bağlanmak",
+        "examples": [
+            "Cannot connect to the database.",
+            "Connect to the VPN first.",
+            "The device connects to the internet via Wi-Fi."
+        ],
+        "exampleTranslations": [
+            "Veritabanına bağlanılamıyor.",
+            "Önce VPN'e bağlan.",
+            "Cihaz internete Wi-Fi ile bağlanıyor."
+        ]
+    },
+    {
+        "id": 50,
+        "english": "Look forward to",
+        "turkish": "Dört gözle beklemek",
+        "examples": [
+            "I look forward to your reply.",
+            "We look forward to working with you.",
+            "I look forward to the new release."
+        ],
+        "exampleTranslations": [
+            "Cevabınızı dört gözle bekliyorum.",
+            "Sizinle çalışmayı dört gözle bekliyoruz.",
+            "Yeni sürümü dört gözle bekliyorum."
+        ]
+    }
+]

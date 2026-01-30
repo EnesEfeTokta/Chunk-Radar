@@ -413,6 +413,163 @@ app.delete('/api/progress/:groupId', (req, res) => {
     }
 });
 
+// Settings API - Get user settings
+app.get('/api/settings', (req, res) => {
+    try {
+        const metadata = getMetadata();
+        const defaultSettings = {
+            dailyGoal: 20,
+            ttsSpeed: 0.85,
+            ttsVoice: 'en-US'
+        };
+        res.json(metadata.settings || defaultSettings);
+    } catch (err) {
+        console.error('GET /api/settings error:', err);
+        res.status(500).json({ error: 'Failed to read settings' });
+    }
+});
+
+// Settings API - Update user settings
+app.put('/api/settings', (req, res) => {
+    try {
+        const { dailyGoal, ttsSpeed, ttsVoice } = req.body;
+        const metadata = getMetadata();
+
+        metadata.settings = {
+            ...(metadata.settings || {}),
+            ...(dailyGoal !== undefined && { dailyGoal }),
+            ...(ttsSpeed !== undefined && { ttsSpeed }),
+            ...(ttsVoice !== undefined && { ttsVoice })
+        };
+
+        saveMetadata(metadata);
+        res.json(metadata.settings);
+    } catch (err) {
+        console.error('PUT /api/settings error:', err);
+        res.status(500).json({ error: 'Failed to update settings' });
+    }
+});
+
+// Streak API - Get current streak info
+app.get('/api/streak', (req, res) => {
+    try {
+        const metadata = getMetadata();
+        const today = new Date().toISOString().split('T')[0];
+        const stats = metadata.stats || [];
+
+        // Calculate streak
+        let currentStreak = 0;
+        let longestStreak = metadata.longestStreak || 0;
+
+        // Check if user studied today
+        const todayStats = stats.find(s => s.date === today);
+        const todayCount = todayStats ? todayStats.total : 0;
+        const dailyGoal = metadata.settings?.dailyGoal || 20;
+
+        // Calculate current streak by checking consecutive days
+        const sortedStats = [...stats].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        for (let i = 0; i < sortedStats.length; i++) {
+            const statDate = new Date(sortedStats[i].date);
+            const expectedDate = new Date();
+            expectedDate.setDate(expectedDate.getDate() - i);
+            const expectedDateStr = expectedDate.toISOString().split('T')[0];
+
+            if (sortedStats[i].date === expectedDateStr && sortedStats[i].total >= dailyGoal) {
+                currentStreak++;
+            } else if (i === 0 && sortedStats[i].date !== expectedDateStr) {
+                // Today not studied yet, check from yesterday
+                expectedDate.setDate(expectedDate.getDate() - 1);
+                const yesterdayStr = expectedDate.toISOString().split('T')[0];
+                if (sortedStats[i].date === yesterdayStr && sortedStats[i].total >= dailyGoal) {
+                    currentStreak++;
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Update longest streak if needed
+        if (currentStreak > longestStreak) {
+            metadata.longestStreak = currentStreak;
+            saveMetadata(metadata);
+            longestStreak = currentStreak;
+        }
+
+        res.json({
+            currentStreak,
+            longestStreak,
+            todayCount,
+            dailyGoal,
+            goalReached: todayCount >= dailyGoal
+        });
+    } catch (err) {
+        console.error('GET /api/streak error:', err);
+        res.status(500).json({ error: 'Failed to get streak' });
+    }
+});
+
+// Confidence API - Update chunk confidence level for spaced repetition
+app.post('/api/confidence', (req, res) => {
+    try {
+        const { groupId, chunkId, isCorrect } = req.body;
+        if (!groupId || !chunkId || isCorrect === undefined) {
+            return res.status(400).json({ error: 'groupId, chunkId, and isCorrect are required' });
+        }
+
+        const metadata = getMetadata();
+        if (!metadata.confidence) {
+            metadata.confidence = {};
+        }
+        if (!metadata.confidence[groupId]) {
+            metadata.confidence[groupId] = {};
+        }
+
+        const current = metadata.confidence[groupId][chunkId] || { level: 0, nextReview: null };
+
+        if (isCorrect) {
+            // Increase confidence, max 5
+            current.level = Math.min(5, current.level + 1);
+            // Next review in days: 1, 2, 4, 7, 14, 30
+            const intervals = [1, 2, 4, 7, 14, 30];
+            const daysUntilNext = intervals[Math.min(current.level, 5)];
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + daysUntilNext);
+            current.nextReview = nextDate.toISOString().split('T')[0];
+        } else {
+            // Reset confidence on wrong answer
+            current.level = Math.max(0, current.level - 2);
+            // Review tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            current.nextReview = tomorrow.toISOString().split('T')[0];
+        }
+
+        current.lastReviewed = new Date().toISOString().split('T')[0];
+        metadata.confidence[groupId][chunkId] = current;
+        saveMetadata(metadata);
+
+        res.json({ success: true, confidence: current });
+    } catch (err) {
+        console.error('POST /api/confidence error:', err);
+        res.status(500).json({ error: 'Failed to update confidence' });
+    }
+});
+
+// Confidence API - Get all confidence data for a group
+app.get('/api/confidence/:groupId', (req, res) => {
+    try {
+        const { groupId } = req.params;
+        const metadata = getMetadata();
+        res.json(metadata.confidence?.[groupId] || {});
+    } catch (err) {
+        console.error('GET /api/confidence error:', err);
+        res.status(500).json({ error: 'Failed to get confidence data' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Persistence server running at http://localhost:${PORT}`);
 });
