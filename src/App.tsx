@@ -821,31 +821,26 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
     <div className={`flash-card-container ${isFlipped ? 'flipped' : ''}`} onClick={handleClick}>
       <div className="flash-card">
         <div className="card-face card-front">
-          <button className="edit-chunk-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎</button>
+          <button className="card-edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎ Düzenle</button>
           <div className="card-timer">⏱️ {formatTime(cardElapsed)}</div>
-          <div className="chunk-info">
-            <h2 className="chunk-english">{chunk.english}</h2>
-            <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
-          </div>
-          <button className="tts-btn-small" onClick={(e) => { e.stopPropagation(); speak(chunk.english, ttsSpeed, ttsVoice); }}>🔊</button>
+          <h2 className="chunk-english">{chunk.english}</h2>
+          <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
         </div>
         <div className="card-face card-back">
-          <div className="back-content">
-            <span className="chunk-turkish-back">{chunk.turkish}</span>
-            <div className="examples-list-back">
-              {chunk.examples.map((example, idx) => (
-                <div key={idx} className="example-item-wrapper">
-                  <p className="example-item-back" onClick={(e) => { e.stopPropagation(); speak(example, ttsSpeed, ttsVoice); }}>
-                    {example}
-                  </p>
-                  {chunk.exampleTranslations && chunk.exampleTranslations[idx] && (
-                    <p className="example-translation">{chunk.exampleTranslations[idx]}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-            <button className="tts-all-btn" onClick={handleReadAll}>📢 Tümünü Oku</button>
+          <span className="chunk-turkish-back">{chunk.turkish}</span>
+          <div className="examples-list-back">
+            {chunk.examples.map((example, idx) => (
+              <p
+                key={idx}
+                className="example-item-back"
+                data-turkish={chunk.exampleTranslations?.[idx] || ''}
+                onClick={(e) => { e.stopPropagation(); speak(example, ttsSpeed, ttsVoice); }}
+              >
+                {example}
+              </p>
+            ))}
           </div>
+          <button className="tts-btn-small" onClick={handleReadAll}>🔊 Tümünü Oku</button>
         </div>
       </div>
     </div>

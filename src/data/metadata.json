@@ -79,19 +79,13 @@
     },
     {
       "date": "2026-01-30",
-      "correct": 9,
-      "wrong": 0,
-      "total": 9
+      "correct": 10,
+      "wrong": 1,
+      "total": 11
     }
   ],
   "progress": {
-    "default": {
-      "1": "correct",
-      "2": "correct",
-      "21": "correct",
-      "26": "correct",
-      "30": "correct"
-    },
+    "default": {},
     "top-200": {},
     "gnlk-popler-2": {
       "19": "correct",
@@ -105,6 +99,20 @@
       "9": "skipped",
       "14": "skipped",
       "30": "skipped"
+    }
+  },
+  "confidence": {
+    "default": {
+      "8": {
+        "level": 0,
+        "nextReview": "2026-01-31",
+        "lastReviewed": "2026-01-30"
+      },
+      "29": {
+        "level": 1,
+        "nextReview": "2026-02-01",
+        "lastReviewed": "2026-01-30"
+      }
     }
   }
 }
