@@ -819,10 +819,12 @@ function FlashCard({ chunk, isFlipped, onSingleClick, onDoubleClick, onEdit, car
 
   return (
     <div className={`flash-card-container ${isFlipped ? 'flipped' : ''}`} onClick={handleClick}>
+      {/* Controls outside the rotating card */}
+      <button className="card-edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎ Düzenle</button>
+      <div className="card-timer">⏱️ {formatTime(cardElapsed)}</div>
+
       <div className="flash-card">
         <div className="card-face card-front">
-          <button className="card-edit-btn" onClick={(e) => { e.stopPropagation(); onEdit(); }}>✎ Düzenle</button>
-          <div className="card-timer">⏱️ {formatTime(cardElapsed)}</div>
           <h2 className="chunk-english">{chunk.english}</h2>
           <p className="tap-hint">{isFlipped ? 'Tekrar görmek için tıkla' : 'Çevirmek için çift tıkla'}</p>
         </div>
@@ -1073,6 +1075,30 @@ function App() {
     return () => clearInterval(interval);
   }, [sessionStartTime, cardStartTime]);
 
+  // Keyboard shortcuts: A=Wrong, S=Skip, D=Correct
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only trigger if card is flipped and we're not in a text input
+      if (!isFlipped || isFinished) return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      switch (e.key.toLowerCase()) {
+        case 'a':
+          handleAnswer('wrong');
+          break;
+        case 's':
+          handleAnswer('skipped');
+          break;
+        case 'd':
+          handleAnswer('correct');
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [isFlipped, isFinished, currentIndex, sessionChunks, progress]);
+
   const handleAnswer = (status: ChunkStatus) => {
     const newProgress = [...progress];
     newProgress[currentIndex].status = status;
@@ -1120,17 +1146,31 @@ function App() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const getStatusClass = (status: ChunkStatus) => {
-    switch (status) {
-      case 'correct': return 'status-correct';
-      case 'wrong': return 'status-wrong';
-      case 'skipped': return 'status-skipped';
-      default: return 'status-unreviewed';
-    }
-  };
-
   const currentChunk = sessionChunks[currentIndex];
   const selectedGroup = groups.find(g => g.id === selectedGroupId);
+
+  // Filter chunks based on focus mode
+  const filteredChunks = useMemo(() => {
+    if (focusMode === 'all') return sessionChunks;
+
+    return sessionChunks.filter((chunk, idx) => {
+      const status = progress[idx]?.status;
+      const conf = confidence[chunk.id];
+      const level = conf ? conf.level : 0; // Treat missing confidence as level 0
+
+      switch (focusMode) {
+        case 'wrong':
+          return status === 'wrong';
+        case 'skipped':
+          return status === 'skipped';
+        case 'review':
+          // Review mode: low confidence (< 3) or wrong/skipped
+          return level < 3 || status === 'wrong' || status === 'skipped';
+        default:
+          return true;
+      }
+    });
+  }, [sessionChunks, progress, confidence, focusMode]);
 
   // Calculate stats for finish screen
   const correctCount = progress.filter(p => p.status === 'correct').length;
@@ -1185,7 +1225,7 @@ function App() {
         </div>
       </nav>
 
-      {/* Modern Group Tabs */}
+      {/* Modern Group Tabs - Keep at top */}
       <div className="group-tabs-container">
         <div className="group-tabs">
           {groups.map(g => (
@@ -1200,37 +1240,87 @@ function App() {
         </div>
       </div>
 
-      {/* Focus Mode Buttons */}
-      <div className="focus-mode-container">
-        <span className="focus-label">Odak:</span>
-        <button className={`focus-btn ${focusMode === 'all' ? 'active' : ''}`} onClick={() => setFocusMode('all')}>Tümü</button>
-        <button className={`focus-btn ${focusMode === 'wrong' ? 'active' : ''}`} onClick={() => setFocusMode('wrong')}>❌ Yanlışlar</button>
-        <button className={`focus-btn ${focusMode === 'skipped' ? 'active' : ''}`} onClick={() => setFocusMode('skipped')}>❓ Bilinmeyenler</button>
-        <button className={`focus-btn ${focusMode === 'review' ? 'active' : ''}`} onClick={() => setFocusMode('review')}>🔄 Tekrar</button>
-      </div>
 
-      {/* Mini Cards Navigation */}
+
+      {/* Right Panel - New Clean Design */}
       {sessionChunks.length > 0 && !isFinished && (
-        <>
-          <div className="mini-cards-nav">
-            {sessionChunks.map((chunk, idx) => {
+        <div className="right-panel">
+          {/* Sticky Focus Filter Bar */}
+          <div className="focus-filter-bar">
+            <button
+              className={`filter-pill ${focusMode === 'all' ? 'active' : ''}`}
+              onClick={() => setFocusMode('all')}
+              title="Tüm chunk'ları göster"
+            >
+              Tümü
+            </button>
+            <button
+              className={`filter-pill ${focusMode === 'wrong' ? 'active' : ''}`}
+              onClick={() => setFocusMode('wrong')}
+              title="Sadece yanlış yanıtlananlar"
+            >
+              ❌ {wrongCount}
+            </button>
+            <button
+              className={`filter-pill ${focusMode === 'skipped' ? 'active' : ''}`}
+              onClick={() => setFocusMode('skipped')}
+              title="Sadece atlananlar"
+            >
+              ❓ {skippedCount}
+            </button>
+            <button
+              className={`filter-pill ${focusMode === 'review' ? 'active' : ''}`}
+              onClick={() => setFocusMode('review')}
+              title="Tekrar edilmesi gerekenler"
+            >
+              🔄 {filteredChunks.length}
+            </button>
+          </div>
+
+          {/* Chunk Navigator */}
+          <div className="chunk-navigator">
+            <div className="navigator-header">
+              <span className="chunk-count">
+                {focusMode === 'all' ? sessionChunks.length : filteredChunks.length} Chunk
+                {focusMode !== 'all' && <span style={{ opacity: 0.6, fontSize: '0.85em' }}> (filtreli)</span>}
+              </span>
+            </div>
+            {(focusMode === 'all' ? sessionChunks : filteredChunks).map((chunk) => {
+              // Get the real index in sessionChunks
+              const idx = sessionChunks.indexOf(chunk);
               const conf = confidence[chunk.id];
+              const status = progress[idx]?.status || 'unreviewed';
               return (
                 <div
                   key={chunk.id}
-                  className={`mini-card ${getStatusClass(progress[idx]?.status || 'unreviewed')} ${idx === currentIndex ? 'active' : ''}`}
+                  className={`chunk-item ${status} ${idx === currentIndex ? 'active' : ''}`}
                   onClick={() => jumpToCard(idx)}
-                  title={`Chunk ${idx + 1}: ${chunk.english}${conf ? ` (Güven: ${conf.level}/5)` : ''}`}
                 >
-                  {progress[idx]?.status === 'skipped' ? '?' : idx + 1}
+                  <div className="chunk-number">{idx + 1}</div>
+                  <div className="chunk-preview">
+                    <div className="chunk-text">{chunk.english}</div>
+                    <div className="chunk-confidence">
+                      {conf ? `Lv ${conf.level}/5` : 'Lv 0/5'}
+                    </div>
+                  </div>
+                  <div className="chunk-status-icon">
+                    {status === 'correct' && '✓'}
+                    {status === 'wrong' && '✗'}
+                    {status === 'skipped' && '?'}
+                    {status === 'unreviewed' && '○'}
+                  </div>
                 </div>
               );
             })}
           </div>
-          <div className="reset-container">
-            <button className="reset-btn" onClick={() => resetProgress(selectedGroupId)}>🔄 İlerlemeyi Sıfırla</button>
+
+          {/* Sticky Footer */}
+          <div className="panel-footer">
+            <button className="reset-btn" onClick={() => resetProgress(selectedGroupId)}>
+              🔄 İlerlemeyi Sıfırla
+            </button>
           </div>
-        </>
+        </div>
       )}
 
       <main className="game-area">
