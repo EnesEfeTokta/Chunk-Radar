@@ -14,6 +14,11 @@
       "id": "software-popler-1",
       "name": "Software Popüler 1",
       "file": "software-popler-1.json"
+    },
+    {
+      "id": "Low School Level",
+      "name": "Low School Level",
+      "file": "low_school_level.json"
     }
   ],
   "stats": [
@@ -85,16 +90,42 @@
     },
     {
       "date": "2026-02-01",
-      "correct": 4,
+      "correct": 22,
       "wrong": 8,
-      "total": 12
+      "total": 30
+    },
+    {
+      "date": "2026-02-04",
+      "correct": 18,
+      "wrong": 0,
+      "total": 18
+    },
+    {
+      "date": "2026-02-05",
+      "correct": 17,
+      "wrong": 0,
+      "total": 17
     }
   ],
   "progress": {
     "default": {
-      "4": "skipped",
-      "30": "wrong",
-      "46": "correct"
+      "1": "correct",
+      "6": "correct",
+      "7": "correct",
+      "8": "correct",
+      "10": "correct",
+      "15": "correct",
+      "17": "correct",
+      "18": "correct",
+      "22": "correct",
+      "29": "correct",
+      "31": "correct",
+      "35": "correct",
+      "40": "correct",
+      "41": "correct",
+      "42": "correct",
+      "44": "correct",
+      "49": "correct"
     },
     "top-200": {},
     "gnlk-popler-2": {
@@ -109,43 +140,163 @@
       "9": "skipped",
       "14": "skipped",
       "30": "skipped"
+    },
+    "software-popler-1": {
+      "1": "skipped",
+      "2": "skipped",
+      "4": "skipped",
+      "5": "skipped",
+      "8": "skipped",
+      "10": "skipped",
+      "11": "skipped",
+      "15": "skipped",
+      "18": "skipped",
+      "19": "skipped",
+      "23": "skipped",
+      "24": "skipped",
+      "27": "skipped",
+      "35": "skipped",
+      "37": "skipped",
+      "41": "skipped",
+      "43": "skipped",
+      "47": "skipped",
+      "48": "skipped",
+      "50": "skipped"
+    },
+    "Low School Level": {
+      "1": "correct",
+      "2": "correct",
+      "3": "correct",
+      "4": "correct",
+      "5": "correct",
+      "6": "correct",
+      "7": "correct",
+      "8": "correct",
+      "10": "correct",
+      "13": "correct",
+      "14": "correct",
+      "16": "correct",
+      "17": "correct",
+      "18": "correct",
+      "19": "correct",
+      "20": "correct",
+      "21": "correct",
+      "22": "correct",
+      "23": "correct",
+      "24": "correct",
+      "25": "correct",
+      "28": "correct",
+      "30": "correct",
+      "31": "correct",
+      "35": "correct",
+      "36": "correct",
+      "37": "correct",
+      "38": "correct",
+      "40": "correct",
+      "41": "skipped",
+      "42": "correct",
+      "44": "correct",
+      "45": "correct",
+      "46": "correct",
+      "47": "skipped",
+      "50": "correct"
     }
   },
   "confidence": {
     "default": {
+      "1": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
       "3": {
         "level": 0,
         "nextReview": "2026-02-02",
         "lastReviewed": "2026-02-01"
       },
+      "6": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "7": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
       "8": {
-        "level": 0,
-        "nextReview": "2026-01-31",
-        "lastReviewed": "2026-01-30"
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "10": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
       },
       "13": {
         "level": 1,
         "nextReview": "2026-02-03",
         "lastReviewed": "2026-02-01"
       },
+      "15": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
       "17": {
-        "level": 0,
-        "nextReview": "2026-02-02",
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "18": {
+        "level": 1,
+        "nextReview": "2026-02-03",
         "lastReviewed": "2026-02-01"
       },
       "22": {
-        "level": 0,
-        "nextReview": "2026-02-02",
+        "level": 1,
+        "nextReview": "2026-02-03",
         "lastReviewed": "2026-02-01"
       },
       "29": {
-        "level": 1,
-        "nextReview": "2026-02-01",
-        "lastReviewed": "2026-01-30"
+        "level": 2,
+        "nextReview": "2026-02-05",
+        "lastReviewed": "2026-02-01"
       },
       "30": {
         "level": 0,
         "nextReview": "2026-02-02",
+        "lastReviewed": "2026-02-01"
+      },
+      "31": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "35": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "40": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "41": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "42": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      },
+      "44": {
+        "level": 2,
+        "nextReview": "2026-02-05",
         "lastReviewed": "2026-02-01"
       },
       "46": {
@@ -157,7 +308,190 @@
         "level": 1,
         "nextReview": "2026-02-03",
         "lastReviewed": "2026-02-01"
+      },
+      "49": {
+        "level": 1,
+        "nextReview": "2026-02-03",
+        "lastReviewed": "2026-02-01"
+      }
+    },
+    "Low School Level": {
+      "1": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "2": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "3": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "4": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "5": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "6": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "7": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "8": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "10": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "13": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "14": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "16": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "17": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "18": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "19": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "20": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "21": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "22": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "23": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "24": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "25": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "28": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "30": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "31": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "35": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "36": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "37": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "38": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "40": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "42": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "44": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "45": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "46": {
+        "level": 1,
+        "nextReview": "2026-02-06",
+        "lastReviewed": "2026-02-04"
+      },
+      "47": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
+      },
+      "50": {
+        "level": 1,
+        "nextReview": "2026-02-07",
+        "lastReviewed": "2026-02-05"
       }
     }
-  }
+  },
+  "longestStreak": 1
 }
