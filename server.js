@@ -570,6 +570,96 @@ app.get('/api/confidence/:groupId', (req, res) => {
     }
 });
 
+// ====== STORY API ENDPOINTS ======
+
+// Get all stories
+app.get('/api/stories', (req, res) => {
+    try {
+        const storiesPath = path.join(DATA_DIR, 'stories.json');
+        const data = readJSON(storiesPath, { stories: [] });
+        res.json(data.stories);
+    } catch (err) {
+        console.error('GET /api/stories error:', err);
+        res.status(500).json({ error: 'Failed to read stories' });
+    }
+});
+
+// Create new story
+app.post('/api/stories', (req, res) => {
+    try {
+        const storiesPath = path.join(DATA_DIR, 'stories.json');
+        const data = readJSON(storiesPath, { stories: [] });
+
+        const newStory = {
+            id: Date.now(),
+            ...req.body,
+            createdAt: new Date().toISOString().split('T')[0],
+            updatedAt: new Date().toISOString().split('T')[0]
+        };
+
+        data.stories.push(newStory);
+        writeJSON(storiesPath, data);
+
+        console.log(`Created story: ${newStory.title}`);
+        res.json(newStory);
+    } catch (err) {
+        console.error('POST /api/stories error:', err);
+        res.status(500).json({ error: 'Failed to create story' });
+    }
+});
+
+// Update story
+app.put('/api/stories/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const storiesPath = path.join(DATA_DIR, 'stories.json');
+        const data = readJSON(storiesPath, { stories: [] });
+
+        const index = data.stories.findIndex(s => s.id === parseInt(id));
+        if (index === -1) {
+            return res.status(404).json({ error: 'Story not found' });
+        }
+
+        data.stories[index] = {
+            ...data.stories[index],
+            ...req.body,
+            id: data.stories[index].id,
+            createdAt: data.stories[index].createdAt,
+            updatedAt: new Date().toISOString().split('T')[0]
+        };
+
+        writeJSON(storiesPath, data);
+        console.log(`Updated story: ${data.stories[index].title}`);
+        res.json(data.stories[index]);
+    } catch (err) {
+        console.error('PUT /api/stories error:', err);
+        res.status(500).json({ error: 'Failed to update story' });
+    }
+});
+
+// Delete story
+app.delete('/api/stories/:id', (req, res) => {
+    try {
+        const { id } = req.params;
+        const storiesPath = path.join(DATA_DIR, 'stories.json');
+        const data = readJSON(storiesPath, { stories: [] });
+
+        const originalLength = data.stories.length;
+        data.stories = data.stories.filter(s => s.id !== parseInt(id));
+
+        if (data.stories.length === originalLength) {
+            return res.status(404).json({ error: 'Story not found' });
+        }
+
+        writeJSON(storiesPath, data);
+        console.log(`Deleted story ID: ${id}`);
+        res.json({ success: true });
+    } catch (err) {
+        console.error('DELETE /api/stories error:', err);
+        res.status(500).json({ error: 'Failed to delete story' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Persistence server running at http://localhost:${PORT}`);
 });

@@ -1,0 +1,50 @@
+{
+    "stories": [
+        {
+            "id": 1,
+            "title": "The Lost Key",
+            "titleTurkish": "Kayıp Anahtar",
+            "content": "Emma woke up late. She needed to go to work, but she couldn't find her keys. She looked everywhere - in her bag, under the sofa, in the kitchen. Nothing. \"Where are my keys?\" she thought. Then she remembered. Yesterday, she went to the park. She sat on a bench and read a book. Maybe she left her keys there! Emma ran to the park. She found the bench. And there, on the ground, were her keys. \"Thank goodness!\" she said with a smile.",
+            "contentTurkish": "Emma geç uyandı. İşe gitmesi gerekiyordu ama anahtarlarını bulamıyordu. Her yere baktı - çantasında, koltukların altında, mutfakta. Hiçbir şey. \"Anahtarlarım nerede?\" diye düşündü. Sonra hatırladı. Dün parka gitmişti. Bir bankta oturmuş ve kitap okumuştu. Belki anahtarlarını orada unutmuştu! Emma parka koştu. Bankı buldu. Ve orada, yerde, anahtarları vardı. \"Çok şükür!\" dedi gülümseyerek.",
+            "difficulty": "beginner",
+            "tags": [
+                "daily life",
+                "short"
+            ],
+            "wordCount": 95,
+            "createdAt": "2026-02-05",
+            "updatedAt": "2026-02-05"
+        },
+        {
+            "id": 2,
+            "title": "A Day at the Market",
+            "titleTurkish": "Pazarda Bir Gün",
+            "content": "Sarah loves going to the farmers market every Saturday morning. The market is full of fresh fruits, vegetables, and handmade products. Today, she wants to buy tomatoes, cheese, and bread. She walks between the colorful stalls. A friendly farmer shows her his organic tomatoes. \"These are the best in town,\" he says proudly. Sarah buys a kilo. At the cheese stall, she tastes different types before choosing aged cheddar. Finally, she picks up warm, fresh bread from the bakery. As she walks home with her basket full of delicious food, she feels happy. Shopping at the market always makes her day special.",
+            "contentTurkish": "Sarah her Cumartesi sabahı çiftçi pazarına gitmeyi sever. Pazar taze meyveler, sebzeler ve el yapımı ürünlerle dolu. Bugün domates, peynir ve ekmek almak istiyor. Renkli tezgahlar arasında yürüyor. Arkadaş canlısı bir çiftçi ona organik domateslerini gösteriyor. \"Bunlar şehrin en iyileri,\" diyor gururla. Sarah bir kilo alıyor. Peynir tezgahında, yaşlı çedar seçmeden önce farklı türleri tadıyor. Son olarak, fırından sıcak, taze ekmek alıyor. Lezzetli yiyeceklerle dolu sepetiyle eve yürürken mutlu hissediyor. Pazarda alışveriş yapmak her zaman gününü özel kılıyor.",
+            "difficulty": "intermediate",
+            "tags": [
+                "daily life",
+                "food"
+            ],
+            "wordCount": 118,
+            "createdAt": "2026-02-05",
+            "updatedAt": "2026-02-05"
+        },
+        {
+            "id": 3,
+            "title": "The Time Traveler",
+            "titleTurkish": "Zaman Yolcusu",
+            "content": "Professor James had spent twenty years building his time machine. Finally, it was ready. He set the date to July 20, 1969 - the day humans first landed on the moon. With trembling hands, he pressed the button. Light flashed, and suddenly he was standing in Houston, at NASA's Mission Control. People were cheering, crying with joy. \"The Eagle has landed,\" came the voice from the moon. James watched in awe as Neil Armstrong took his first steps on the lunar surface. It was the most incredible moment of human achievement he had ever witnessed. But something was wrong. The machine started beeping. He had only five minutes before being pulled back to his own time. James quickly took photos and recorded the historic audio. As the light flashed again, he smiled. His journey through time had been worth every second.",
+            "contentTurkish": "Profesör James, zaman makinesini yapmak için yirmi yıl harcamıştı. Sonunda hazırdı. Tarihi 20 Temmuz 1969'a - insanların Ay'a ilk ayak bastığı güne - ayarladı. Titreyen elleriyle düğmeye bastı. Işık çaktı ve aniden kendini Houston'da, NASA'nın Görev Kontrol Merkezi'nde buldu. İnsanlar tezahürat yapıyor, sevinçle ağlıyorlardı. \"Kartal iniş yaptı,\" sesi Ay'dan geldi. James, Neil Armstrong'un Ay yüzeyinde ilk adımlarını atmasını hayranlıkla izledi. Şimdiye kadar tanık olduğu en inanılmaz insan başarısı anıydı. Ama bir şeyler ters gidiyordu. Makine bip sesi çıkarmaya başladı. Kendi zamanına geri çekilmeden önce sadece beş dakikası vardı. James hızla fotoğraflar çekti ve tarihi sesi kaydetti. Işık tekrar çakarken gülümsedi. Zamanda yolculuğu her saniyesine değmişti.",
+            "difficulty": "advanced",
+            "tags": [
+                "science fiction",
+                "adventure",
+                "history"
+            ],
+            "wordCount": 178,
+            "createdAt": "2026-02-05",
+            "updatedAt": "2026-02-05"
+        }
+    ]
+}
